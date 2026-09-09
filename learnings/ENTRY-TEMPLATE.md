@@ -62,13 +62,13 @@ proposed-text: |
                        flux/skills/<skill>/SKILL.md
                        flux/model-profiles.toml
                    A change to a project repo lands on a `lessons/*`
-                   branch and through a PR, titled `[LESSONS] <summary>`.
-                   A change to Flux commits straight to `main`, as every
-                   Flux change does. Read the diff before either lands:
-                   a repo-root AGENTS.md or CLAUDE.md, an
-                   `agents/<name>.md`, a `skills/*/SKILL.md` or
-                   `model-profiles.toml` loads into every session in its
-                   scope, so its blast radius is global.
+                   branch and through a PR, titled `[LESSONS] <summary>`,
+                   which the user merges. A change to Flux commits
+                   straight to `main`, as every Flux change does. Read the
+                   diff before either lands: a repo-root AGENTS.md or
+                   CLAUDE.md, an `agents/<name>.md`, a `skills/*/SKILL.md`
+                   or `model-profiles.toml` loads into every session in
+                   its scope, so its blast radius is global.
 
     scope          OPTIONAL advisory hint at the patch verb — `add`,
                    `modify`, or `remove`. Not enum-checked at filing.

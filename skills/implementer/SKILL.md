@@ -38,9 +38,9 @@ For genuinely trivial work — a typo, a one-line rename — skip the skill.
    the coverage manifest. Add an `## Incidentals` section for in-diff
    sweep-ups. For UI slices, run `visual-preflight` first and paste its
    report into the PR body.
-4. **Review, in public.** Offer `reviewing-diff` against the open PR, with
-   `spec:` naming the tracer spec or specs. It runs once the human approves,
-   and its findings land as PR comments on the lines they judge. Send a
+4. **Review, on the PR.** Offer `reviewing-diff` against the open PR, with
+   `spec:` naming the tracer spec or specs. It runs once the user approves the
+   run, and its findings land as PR comments on the lines they judge. Send a
    BLOCK to one remediation worker, composing `receiving-code-review` so the
    worker evaluates each finding before applying it. Push the remediation
    commits, then choose the re-review by what the remediation changed:
@@ -49,8 +49,8 @@ For genuinely trivial work — a typo, a one-line rename — skip the skill.
    - A few lines, written in full view of the findings: run none, and record
      that judgement.
 
-   The human approver reads the final thread in every case, and the human
-   merges, on every downstream repo.
+   Hand the user a green PR carrying its review thread. They read the thread
+   and merge, and that merge is the approval. Never merge it yourself.
 5. **Record.** Append the completion note (shipped date, PR) and
    `## What this tracer taught` to each executed spec — the fact the
    design lacked with its evidence, the records affected, the remaining

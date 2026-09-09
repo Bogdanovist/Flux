@@ -69,8 +69,8 @@ lower.
 
 ## Loose ends
 
-- Treat the PRs this gate emits downstream as ordinary PRs, reviewed and
-  merged under their own repos' rules. The close does not wait for them.
+- Treat the PRs this gate emits as ordinary PRs: reviewed on the diff, and
+  merged by the user. The close does not wait for them.
 - Route any unresolved open question that still matters through `followup`
   before you archive. If you archive an open question, you have buried it.
 - Each spike the doc records is disposed here. Code that outlives the project

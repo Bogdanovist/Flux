@@ -170,11 +170,10 @@ a case we don't have yet (YAGNI).
 If X becomes necessary, we can add it then."
 ```
 
-## Handling External Reviewers
+## Handling a reviewer who does not know the codebase
 
-For reviewers outside the immediate team:
-
-Before implementing, verify:
+A review bot, or a contributor seeing the repo for the first time, argues from
+patterns rather than from this code. Before implementing, verify:
 
 - [ ] The suggestion is technically correct for this codebase
 - [ ] Implementation won't break functionality

@@ -56,8 +56,11 @@ Not every repo's default branch is `main`. Check before you assume.
 
 Flux is your own context repo, and every change to it — the charter, the
 skills, the rules, a project doc, a capture — commits in the shared
-`~/src/Flux` checkout and pushes to `main`. A branch here buys a review
-nobody is waiting to give.
+`~/src/Flux` checkout and pushes to `main`.
+
+Take a worktree here only for a reason you can state, and say the reason when
+you take one: a change you want to be able to abandon cleanly, or one whose
+several commits only make sense together. Everything else goes to `main`.
 
 Commit only the files your own change owns, by explicit path. Other sessions
 work in that same checkout, so a sweep with `git add -A` takes their

@@ -1,6 +1,6 @@
 ---
 name: reviewing-diff
-description: Review a PR's diff after the PR exists — focused review dimensions, verified findings with severity tags, everything written as PR comments anchored to the lines they concern. Use on your own PR before you merge it.
+description: Review a PR's diff after the PR exists — focused review dimensions, verified findings with severity tags, everything written as PR comments anchored to the lines they concern. Use on a PR before it goes to the user for merge.
 argument-hint: "pr:<number> tier:<mid|best> spec:<path,...> agents:<subset>"
 ---
 
@@ -78,8 +78,9 @@ that nothing enforces something, name the repo you searched.
   read of the diff, test-quality classification (behavioural /
   implementation / insufficient / none, and whether tests exercise real
   data paths), and what was checked and found clean.
-- Comment only. Never approve, and never request changes. A human approves and
-  a human merges, and downstream branch protection enforces that.
+- Comment only. Never approve, never request changes, and never merge. The
+  user's merge is the approval, and a review that closed its own findings by
+  merging tells them nothing.
 
 ## Lessons
 

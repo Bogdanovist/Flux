@@ -266,7 +266,7 @@ The conductor applies the ledger updates, appends verbatim originals to
 ## Operational notes
 
 - All paths resolve relative to the orchestrator's CWD (the Flux repo).
-  Read candidate artifacts in downstream repos via absolute `~/src/<repo>`
+  Read candidate artifacts in project repos via absolute `~/src/<repo>`
   paths from the table — read-only, on whatever `main` currently is.
 - The ledger is bounded on purpose: read all of it, but keep your proposed
   updates compact. If `evidence.md` itself is drifting large (many

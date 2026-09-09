@@ -72,9 +72,10 @@ Record everything else, and lose nothing.
      uuids: <comma-separated UUIDs of the lessons behind this proposal>
      ```
 
-   - Push. In a project repo, open the PR titled `[LESSONS] <summary>`, and
-     read the diff once more before you merge it: a change to guidance every
-     future session loads deserves the same look you would give code.
+   - Push. In a project repo, open the PR titled `[LESSONS] <summary>` and
+     leave it for the user to merge. Say in the PR body which lessons drove
+     it: a change to guidance every future session loads deserves the same
+     look as code.
 5. **Bookkeep.** Apply the ledger updates to `learnings/evidence.md`
    (counts, fingerprints capped ~5 per cluster, statuses overlaid with
    actual outcomes); append each staged lesson verbatim to

@@ -254,15 +254,19 @@ skill, rule or hook requires a project doc to exist.
 
 ## Review
 
-**Flux ships straight to `main`.** No branch, no PR: this is my own context
-repo, and a branch here buys a review nobody is waiting to give. Edit, commit
-by explicit path, push. Review and verification still apply.
+**Flux ships straight to `main`.** Edit, commit by explicit path, push. Take
+a branch only for a reason you can state — a change you want to abandon
+cleanly, or one that needs several commits to be coherent. Say the reason when
+you take one. Review and verification still apply on `main`.
 
-**Project repos take a feature branch and a PR.** Before you raise one, run
-`reviewing-diff` on the diff and address what it finds. The PR carries its
-findings as comments anchored to the lines they judge, so the merge is a
-decision I make with them in front of me. Merging is mine. Stack dependent
-slices rather than merging to unblock yourself.
+**Project repos take a feature branch and a PR.** Raise the PR when the slice
+is built, then run `reviewing-diff` and let its findings land as PR comments
+anchored to the lines they judge. Answer each one with a commit or a reply.
+
+**My merge is my approval.** Never merge a PR yourself, and never approve one:
+handing me a green PR with its review thread on it is where your part ends.
+Stack a dependent slice on the open branch rather than merging to unblock
+yourself.
 
 Review large work on its plan, where changing course is cheap. Review small
 work on its diff, where a reader can read the whole of it.

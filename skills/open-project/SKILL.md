@@ -67,9 +67,8 @@ you accept a finding. A plan review costs little; reviewing a built diff for
 the same question costs the build.
 
 The code is the other story. Every change to a project repo lands as a feature
-branch and a PR there, reviewed with `reviewing-diff` before you merge it, so
-the diff carries its findings and the merge stays a decision you make with
-them in front of you.
+branch and a PR there, reviewed with `reviewing-diff` once it is raised, so the
+diff carries its findings when the user reads it. Their merge is the approval.
 
 If the work is small enough to skip the doc, skip all of this and let the code
 PR carry the review.

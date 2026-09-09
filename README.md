@@ -60,19 +60,19 @@ belongs at that path. Elsewhere, set `FLUX_DIR` to the checkout root.
 
 ## How it works
 
-**Flux ships straight to `main`.** Edit, commit by explicit path, push. There
-is no branch and no PR here: this is a personal context repo, and a PR buys a
-review nobody is waiting to give. Project repos are the opposite — a feature
-branch, a PR, `reviewing-diff` on the diff, and a merge I make with the
-findings in front of me.
+**Flux ships straight to `main`.** Edit, commit by explicit path, push. A
+branch here needs a stated reason. Project repos work the other way: a feature
+branch, a PR raised when the slice is built, `reviewing-diff` posting its
+findings as PR comments, and my merge as the approval. An agent never merges
+and never approves.
 
 **The Stop hook is a backstop, and it treats the two repo shapes
 differently.** In Flux it pushes what the session committed and names what is
 still uncommitted, because every session shares this one checkout and a sweep
 here would commit another session's half-written file. In a project worktree
-it moves uncommitted work onto a fresh branch and commits it there, never onto
-a protected `main`. Commit your own work by path as you go; the hook is what
-gets it to origin.
+it moves uncommitted work onto a fresh branch and commits it there, so nothing
+lands on `main` without a PR. Commit your own work by path as you go; the hook
+is what gets it to origin.
 
 **Skills carry the methodology; repo docs carry the specifics.** A skill here
 is globally authoritative, and a project repo's `.claude/` does not shadow it.
