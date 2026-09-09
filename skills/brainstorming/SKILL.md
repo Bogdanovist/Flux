@@ -178,9 +178,10 @@ After brainstorming, guide to appropriate next step:
 "Design documented at ~/src/Flux/projects/<slug>/plan.md
 
 Next step per the core loop (AGENTS.md): commit the doc to Flux main and
-run plan-review on it, per open-project §Where the doc is written. If the
-risk justifies it, grow the doc into the solution-design spine first. If
-more context is needed, continue brainstorming or run explore-problem."
+put it to the user, per open-project §Where the doc is written. If the risk
+justifies it, grow the doc into the solution-design spine first, which
+review-solution-design then gates. If more context is needed, continue
+brainstorming or run explore-problem."
 ```
 
 ## Anti-Patterns

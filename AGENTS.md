@@ -235,10 +235,13 @@ maps the tiers, and provider adapters translate them at install time.
    `projects/`. State the intent and the approach. `open-project` creates it.
    The tracer-flow spine is the same doc grown heavyweight, and you can
    always skip it.
-2. **Review the plan before the build.** Run `plan-review` on the doc and
-   edit it where you accept a finding. Reviewing a plan is cheap; reviewing a
-   built diff for the same question costs the build. If the work is small
-   enough to skip the doc, skip this too: the diff is the review.
+2. **Review before the build, at the doc's own depth.** A light plan I read
+   myself; say what you want me to look at. A `solution-design` spine gets
+   `review-solution-design` in a cold context, because a design an
+   implementer will execute cold has to survive being read that way.
+   Reviewing a design is cheap; reviewing a built diff for the same question
+   costs the build. If the work is small enough to skip the doc, skip this
+   too: the diff is the review.
 3. **Capture as you go.** Turn decisions and surprising verified facts into
    records. Send lessons to `/learn`, and route incidental finds through
    `followup`. Capturing costs little, and nothing gates it.

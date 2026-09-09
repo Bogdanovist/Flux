@@ -50,21 +50,22 @@ these heuristics:
   Reviewing the built diff turns into a rubber stamp.
 - **The full spine** — the risk sits in facts about existing systems, or in
   many consumers and seams. Recommend the optional `solution-design` spine,
-  which absorbs and replaces `plan.md`.
+  which absorbs and replaces `plan.md` and which `review-solution-design`
+  then gates in a cold context.
 - **An exploration** — the work delivers knowledge. It settles what is true,
   and it ships nothing. Run it with `explore-problem`, and write its working
   doc as `findings.md` in place of `plan.md`.
 
 ## Where the doc is written
 
-Commit the doc straight to `main` in `~/src/Flux` and push it. Flux is your
-own context repo: a branch and a PR here would buy a review nobody else is
-waiting to give, and a plan stranded on a branch is a plan your other machines
-cannot read.
+Commit the doc straight to `main` in `~/src/Flux` and push it. A branch here
+needs a reason you can state, and a plan is rarely one: a plan stranded on a
+branch is a plan your other machines cannot read.
 
-Then run `plan-review` on it before the build starts, and edit the doc where
-you accept a finding. A plan review costs little; reviewing a built diff for
-the same question costs the build.
+Then put it to the user before the build starts, and say what you want them
+to look at: the contracts it touches, the risks you could not settle, the
+scope you drew. A `solution-design` spine takes `review-solution-design`
+instead, in a cold context.
 
 The code is the other story. Every change to a project repo lands as a feature
 branch and a PR there, reviewed with `reviewing-diff` once it is raised, so the

@@ -48,33 +48,39 @@ section may adapt the flow, and the review honours the adaptation while
 checking that dropped disciplines were named, not silently lost. Then the
 standing classes, each of which has produced real damage:
 
-1. **Restatement drift** — one fact stated in two places that disagree,
+1. **The problem is real, and the design evidences it.** The Why says what
+   the status quo costs and how the author knows. A claim about existing
+   behaviour with no command behind it is a finding, and the finding names
+   the command you wanted.
+2. **The scope is bounded.** The design states what it does not touch. A
+   design that draws no boundary has the build draw one for it.
+3. **Restatement drift** — one fact stated in two places that disagree,
    including an assertion naming what the target-shape block lacks.
-2. **Coverage** — every pinned contract has an assertion; every danger
+4. **Coverage** — every pinned contract has an assertion; every danger
    links to a canonical statement that exists and says what the danger
    claims; nothing catastrophic lives only as inline bolding.
-3. **Checks that cannot fail** — for each verification: what would it
+5. **Checks that cannot fail** — for each verification: what would it
    return if the claim were false? A comparison against its own source
    proves the copy ran.
-4. **Decided voice on undecided things** — statements resting on an open
+6. **Decided voice on undecided things** — statements resting on an open
    question without a provisional marker at the point of use.
-5. **Migration obligations** — one rollback label per state, numbered
+7. **Migration obligations** — one rollback label per state, numbered
    ordering, what goes dark, abort conditions.
-6. **The end-to-end gap** — the design must cover the whole change:
+8. **The end-to-end gap** — the design must cover the whole change:
    migrations, data steps, operational steps, monitoring. Name what has no
    home.
-7. **Contradictions** between decisions stated and design specified.
-8. **Structural integrity** — reading order stated, references resolve,
-   every counted claim has its enumeration, every quantified set written
-   out, and every pointer aims at an artefact with equal or longer life
-   than its own — a durable entry citing an ephemeral doc dies with it.
-9. **A better solution** — understand the why, then ask whether a
-   materially simpler shape delivers it. One good challenge outweighs ten
-   nits.
-10. **Length** — name the specific cuts; verbose docs bloat every
+9. **Contradictions** between decisions stated and design specified.
+10. **Structural integrity** — reading order stated, references resolve,
+    every counted claim has its enumeration, every quantified set written
+    out, and every pointer aims at an artefact with equal or longer life
+    than its own — a durable entry citing an ephemeral doc dies with it.
+11. **A better solution** — understand the why, then ask whether a
+    materially simpler shape delivers it. One good challenge outweighs ten
+    nits.
+12. **Length** — name the specific cuts; verbose docs bloat every
     downstream context.
 
-## Output — shared
+## Output
 
 Findings go to `projects/<name>/solution-design-review-<date>.md`, beside the
 design they judge. When the design rides a PR in a project repo instead, they
