@@ -1,0 +1,29 @@
+# Provider-specific model names live here so skills can speak in stable tiers.
+# Keep the tiers fixed: best is Opus-class, mid is Sonnet-class, cheap is
+# Haiku-class.
+
+[tiers]
+best = "Complex implementation, architecture, hard debugging, and final review."
+mid = "Research, synthesis, ordinary review, and balanced debugging."
+cheap = "Verification, file finding, test output, and other bounded checks."
+
+[providers.anthropic.best]
+model = "opus"
+
+[providers.anthropic.mid]
+model = "sonnet"
+
+[providers.anthropic.cheap]
+model = "haiku"
+
+[providers.codex.best]
+model = "gpt-5.6"
+model_reasoning_effort = "xhigh"
+
+[providers.codex.mid]
+model = "gpt-5.6-terra"
+model_reasoning_effort = "medium"
+
+[providers.codex.cheap]
+model = "gpt-5.6-terra"
+model_reasoning_effort = "low"

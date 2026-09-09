@@ -1,0 +1,121 @@
+{
+  "env": {
+    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "64000",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "80",
+    "CLAUDE_CODE_DISABLE_BG_EXIT_HANDOFF": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(gh pr:*)",
+      "Bash(gh api:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)",
+      "Bash(git push:*)"
+    ],
+    "defaultMode": "auto"
+  },
+  "model": "opus",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/src/Flux/hooks/flux-sync.sh",
+            "timeout": 20
+          },
+          {
+            "type": "command",
+            "command": "bash ~/src/Flux/hooks/checkouts-sync.sh",
+            "timeout": 25
+          },
+          {
+            "type": "command",
+            "command": "bash ~/src/Flux/hooks/skills-relink.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ~/src/Flux/hooks/debt-review-nudge.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/src/Flux/hooks/drain-to-staging.sh",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "bash ~/src/Flux/hooks/auto-commit-push.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/src/Flux/hooks/shared-checkout-guard.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash ~/src/Flux/hooks/git-fetch-freshness.sh",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/src/Flux/hooks/test-output-nudge.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Skill|Read|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/src/Flux/hooks/skill-usage-log.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/src/Flux/hooks/skill-usage-log.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "worktree": {
+    "baseRef": "fresh"
+  },
+  "effortLevel": "xhigh",
+  "autoUpdatesChannel": "stable",
+  "tui": "fullscreen",
+  "theme": "dark",
+  "editorMode": "normal",
+  "showTurnDuration": true
+}

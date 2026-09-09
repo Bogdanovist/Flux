@@ -1,0 +1,10 @@
+# Machine-specific permissions and MCP config; never pushed.
+settings.local.json
+
+# The curation sentinel is per-machine state, written by hooks.
+learnings/.curation-needed
+
+# OS and editor noise
+.DS_Store
+*.swp
+*~
