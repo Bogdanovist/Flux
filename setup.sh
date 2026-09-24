@@ -43,8 +43,11 @@ link_item() {
     esac
     rm "$target"
   elif [ -e "$target" ]; then
-    mv "$target" "${target}.bak"
-    echo "  Backed up $target -> ${target}.bak"
+    local backup="${target}.bak"
+    # An earlier backup may be the only copy of what it holds.
+    [ -e "$backup" ] && backup="${target}.bak.$(date +%Y%m%d-%H%M%S)"
+    mv "$target" "$backup"
+    echo "  Backed up $target -> $backup"
   fi
 
   ln -s "$source" "$target"
