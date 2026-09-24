@@ -48,12 +48,11 @@ converges.
 
 Claude Code reads one user-level settings file, `~/.claude/settings.json`.
 A `settings.local.json` beside it applies only to sessions started in `~`.
-So `setup.sh` merges into the user file: first the tracked `settings.json`,
-then this machine's `settings.local.json`. Flux's hooks and env replace
-their earlier copies, permission entries are added, and a preference such
-as `model` or `theme` is set only where the file has none, because the app
-writes preferences into the same file. Re-run `setup.sh` after a change to
-either source.
+So Flux merges into the user file: first the tracked `settings.json`, then
+this machine's `settings.local.json`. `scripts/merge-settings.sh` holds the
+rules. `setup.sh` runs the merge, and the SessionStart sync hook runs it
+again after each pull, so a change to either source applies from the next
+session.
 
 **On a machine that already carries another config repo**, give Flux its own
 config dir instead, because two config repos cannot both own `~/.claude`:

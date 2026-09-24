@@ -84,7 +84,8 @@ advance_origin() {
 run_sync_hook() {
   local source_field="${1:-startup}"
   printf '{"source":"%s"}' "$source_field" \
-    | FLUX_DIR="$FLUX" FLUX_SYNC_TIMEOUT=10 bash "$SYNC_HOOK" 2>&1
+    | FLUX_DIR="$FLUX" FLUX_SYNC_TIMEOUT=10 CLAUDE_CONFIG_DIR="$TEST_TMP/claude" \
+      bash "$SYNC_HOOK" 2>&1
 }
 
 run_commit_hook() {
@@ -425,6 +426,25 @@ verify_agent_repair_ignores_keyless_agent() {
   printf '%s' "$LAST_OUTPUT" | grep -q "SOCK=$TEST_TMP/agent.dead" || return 1
 }
 
+# A settings change pulled from the other machine reaches the user settings
+# file in the same session start, and the note says it applies next session.
+scenario_pulled_settings_are_merged() {
+  mkdir -p "$TEST_TMP/claude"
+  printf '{"theme":"light"}\n' >"$TEST_TMP/claude/settings.json"
+  git -C "$OTHER" pull --quiet --ff-only origin main
+  printf '{"env":{"PULLED":"1"}}\n' >"$OTHER/settings.json"
+  git -C "$OTHER" add settings.json
+  git -C "$OTHER" commit --quiet -m "settings"
+  git -C "$OTHER" push --quiet origin main
+  local out; out=$(run_sync_hook)
+  printf 'MERGED=%s OUT=%s\n' \
+    "$(jq -c '[.theme, .env.PULLED]' "$TEST_TMP/claude/settings.json")" "$out"
+}
+verify_pulled_settings_are_merged() {
+  printf '%s' "$LAST_OUTPUT" | grep -qF 'MERGED=["light","1"]' || return 1
+  printf '%s' "$LAST_OUTPUT" | grep -q "apply from the next session" || return 1
+}
+
 # ---------------------------------------------------------------
 
 TESTS=(
@@ -434,6 +454,7 @@ TESTS=(
   behind_untracked_only_still_syncs
   diverged_reports_and_refuses
   up_to_date_is_silent
+  pulled_settings_are_merged
   compact_source_is_skipped
   always_exits_zero
   stop_hook_leaves_uncommitted_work_alone

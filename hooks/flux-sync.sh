@@ -26,6 +26,10 @@
 # refreshed file. hooks/auto-commit-push.sh pushes that commit at session end
 # with the checkout's other local commits.
 #
+# After the sync it merges Flux's settings into the user settings file
+# through scripts/merge-settings.sh, so a change to the tracked settings.json
+# or to this machine's settings.local.json applies from the next session.
+#
 # It is a nudge, not a gate: it never blocks session start, always exits 0,
 # and says nothing when the checkout is current.
 #
@@ -33,6 +37,7 @@
 #   FLUX_DIR           root of the Flux context repo (default: the checkout holding this hook)
 #   FLUX_SYNC_TIMEOUT  seconds to bound the fetch (default 10)
 #   SKILL_USAGE_LOG      log the rollup aggregates (see scripts/rollup-skill-usage.sh)
+#   CLAUDE_CONFIG_DIR  config dir holding the user settings file (default ~/.claude)
 
 set -uo pipefail
 
@@ -89,12 +94,27 @@ weekly_rollup() {
   return 0
 }
 
+# Merge after the sync, so the settings come from the checkout as synced.
+# The session has already loaded its settings, so a merge that changes the
+# file applies from the next session, and the note says so.
+merge_settings() {
+  local user_file="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/settings.json"
+  local out
+  if ! out=$(FLUX_DIR="$FLUX" bash "$REPO_ROOT/scripts/merge-settings.sh" "$user_file" 2>&1); then
+    printf '[flux-sync] Could not merge Flux settings into %s: %s. Sessions run on the settings the file already holds. Mention this once.' "$user_file" "$out"
+  elif [ "$out" = merged ]; then
+    printf '[flux-sync] Merged changed Flux settings into %s; they apply from the next session. Mention this once, briefly.' "$user_file"
+  fi
+}
+
 # Emit the sync outcome and exit. Every terminal path funnels through here,
-# so the weekly rollup guard runs exactly once per session start, after
-# whatever syncing was possible.
+# so the weekly rollup guard and the settings merge run exactly once per
+# session start, after whatever syncing was possible.
 emit() {
   weekly_rollup
-  local msg="${1:-}"
+  local msg="${1:-}" merged
+  merged=$(merge_settings)
+  [ -n "$merged" ] && msg="${msg:+$msg }$merged"
   [ -z "$msg" ] && exit 0
   jq -n --arg msg "$msg" '{
     hookSpecificOutput: {

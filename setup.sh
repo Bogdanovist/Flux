@@ -78,69 +78,22 @@ jq --arg flux "$REPO_DIR" --arg src "$FLUX_SRC_ROOT" \
   "$REPO_DIR/settings.local.json" >"$tmp" && mv "$tmp" "$REPO_DIR/settings.local.json"
 echo "  Set FLUX_DIR=$REPO_DIR and FLUX_SRC_ROOT=$FLUX_SRC_ROOT in settings.local.json"
 
-# Claude Code reads one user-level settings file, settings.json in the config
-# dir; a settings.local.json there applies only to sessions started in that
-# dir. So the user file is the person's own, and Flux merges into it: the
-# tracked settings.json, then this machine's settings.local.json. The app
-# writes preferences into the same file, so a preference Flux ships is set
-# only where the file has none. Re-run this script after either source
-# changes.
+# The user settings file is the person's own, and Flux merges into it;
+# scripts/merge-settings.sh says how. hooks/flux-sync.sh repeats the merge at
+# every session start, so a change to either source applies from the next
+# session.
 for name in settings.json settings.local.json; do
   if [ -L "$CLAUDE_DIR/$name" ] && [ "$(readlink "$CLAUDE_DIR/$name")" = "$REPO_DIR/$name" ]; then
     rm "$CLAUDE_DIR/$name"
     echo "  Removed the link $CLAUDE_DIR/$name"
   fi
 done
-python3 - "$CLAUDE_DIR/settings.json" "$REPO_DIR/settings.json" "$REPO_DIR/settings.local.json" <<'PY'
-import json, os, shutil, sys, time
-
-user_path, *frag_paths = sys.argv[1:]
-frags = [json.load(open(p)) for p in frag_paths]
-
-user = {}
-if os.path.lexists(user_path):
-    if os.path.islink(user_path):
-        sys.exit(f"  {user_path} is a link into another config repo; remove it by hand first.")
-    shutil.copy2(user_path, f"{user_path}.bak.{time.strftime('%Y%m%d-%H%M%S')}")
-    user = json.load(open(user_path))
-
-# A Flux hook runs through the linked hooks dir. A machine hook is owned by
-# its exact command. Both are replaced on every run, so a hook dropped from
-# either source leaves the user file too.
-owned = {h["command"] for f in frags for gs in f.get("hooks", {}).values()
-         for g in gs for h in g.get("hooks", [])}
-def is_flux(command):
-    return command in owned or '/.claude}/hooks/' in command
-
-hooks = user.setdefault("hooks", {})
-for groups in hooks.values():
-    for g in groups:
-        g["hooks"] = [h for h in g.get("hooks", []) if not is_flux(h.get("command", ""))]
-    groups[:] = [g for g in groups if g.get("hooks")]
-
-perms = user.setdefault("permissions", {})
-env = user.setdefault("env", {})
-for frag in frags:
-    for event, groups in frag.get("hooks", {}).items():
-        hooks.setdefault(event, []).extend(groups)
-    env.update(frag.get("env", {}))
-    for key, value in frag.get("permissions", {}).items():
-        if isinstance(value, list):
-            have = perms.setdefault(key, [])
-            have.extend(v for v in value if v not in have)
-        else:
-            perms.setdefault(key, value)
-    for key, value in frag.items():
-        if key not in ("hooks", "env", "permissions", "$schema"):
-            user.setdefault(key, value)
-hooks = {k: v for k, v in hooks.items() if v}
-user["hooks"] = hooks
-
-with open(user_path, "w") as f:
-    json.dump(user, f, indent=2)
-    f.write("\n")
-print(f"  Merged settings.json and settings.local.json into {user_path}")
-PY
+merge_result="$(bash "$REPO_DIR/scripts/merge-settings.sh" "$CLAUDE_DIR/settings.json")"
+if [ "$merge_result" = merged ]; then
+  echo "  Merged settings.json and settings.local.json into $CLAUDE_DIR/settings.json"
+else
+  echo "  $CLAUDE_DIR/settings.json already holds the merged settings"
+fi
 
 # Some filesystems drop the execute bit on clone, and every hook runs as a
 # script.
@@ -172,4 +125,4 @@ if [ "$CLAUDE_DIR" != "$HOME/.claude" ]; then
   echo "Start personal sessions with: CLAUDE_CONFIG_DIR=$CLAUDE_DIR claude"
   echo
 fi
-echo "Next: edit $REPO_DIR/settings.local.json to set this machine's settings, then re-run this script."
+echo "Next: edit $REPO_DIR/settings.local.json to set this machine's settings. The next session merges them."

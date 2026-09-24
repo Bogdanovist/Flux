@@ -13,7 +13,8 @@ Claude-specific loading notes:
 - `setup.sh` links this file, `AGENTS.md`, `hooks/` and `agents/` into the
   Claude config dir, and links each `skills/<name>/` into its `skills/`. Edit
   the tracked file, never the installed link.
-- The config dir's `settings.json` belongs to the person. `setup.sh` merges
-  the tracked `settings.json` and the machine's `settings.local.json` into
-  it, so a change to either takes effect after `setup.sh` runs again.
+- The config dir's `settings.json` belongs to the person.
+  `scripts/merge-settings.sh` merges the tracked `settings.json` and the
+  machine's `settings.local.json` into it at every session start, so a
+  change to either applies from the next session.
 - Where a recurrence must invoke Claude Code directly, use `claude -p`.
