@@ -14,6 +14,12 @@
 
 set -uo pipefail
 
+# Run from Flux's own pre-commit hook, this suite inherits the flag that stops
+# the hook re-entering itself, and every fixture commit would then skip the
+# hook under test. The fixture's runner holds one stub suite, so clearing the
+# flag cannot recurse.
+unset FLUX_PRE_COMMIT_ACTIVE
+
 SCRIPT_DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
