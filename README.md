@@ -30,12 +30,19 @@ works, what it knows, and where its accumulated context lives.
 ## Install
 
 ```bash
-git clone git@github.com:Bogdanovist/Flux.git ~/src/Flux
-~/src/Flux/setup.sh
+git clone git@github.com:Bogdanovist/Flux.git ~/src/personal/Flux
+~/src/personal/Flux/setup.sh
 ```
 
-`setup.sh` links `AGENTS.md`, `CLAUDE.md`, `settings.json`, `agents/` and
-`settings.local.json` into `~/.claude`, links each skill into
+Clone Flux wherever suits the machine. The directory that holds the clone is
+the Flux root: every repo Flux works on sits beside it there, and hooks and
+scripts touch nothing outside it. `setup.sh` writes both paths into
+`settings.local.json` as `FLUX_DIR` (the clone) and `FLUX_SRC_ROOT` (its
+parent). Claude Code passes them to every hook and Bash command, and skills
+name paths through them.
+
+`setup.sh` links `AGENTS.md`, `CLAUDE.md`, `settings.json`, `agents/`,
+`hooks/` and `settings.local.json` into `~/.claude`, links each skill into
 `~/.claude/skills/`, installs the repo's pre-commit hook, and backs up
 anything it replaces. Re-run it any time; it converges.
 
@@ -43,7 +50,7 @@ anything it replaces. Re-run it any time; it converges.
 config dir instead, because two config repos cannot both own `~/.claude`:
 
 ```bash
-FLUX_CLAUDE_DIR=~/.claude-flux ~/src/Flux/setup.sh
+FLUX_CLAUDE_DIR=~/.claude-flux "$FLUX_DIR/setup.sh"
 CLAUDE_CONFIG_DIR=~/.claude-flux claude       # start a personal session
 ```
 
@@ -54,9 +61,6 @@ install.
 
 Pull updates with a normal `git pull`; the SessionStart hook fast-forwards the
 checkout on its own, and changes take effect on the next session.
-
-Hook commands in `settings.json` point at `~/src/Flux/hooks/`, so the clone
-belongs at that path. Elsewhere, set `FLUX_DIR` to the checkout root.
 
 ## How it works
 

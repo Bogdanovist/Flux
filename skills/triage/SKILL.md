@@ -19,7 +19,7 @@ Most follow-ups should die on the record.
 
 ## The pass
 
-1. **Read the whole inbox** (`~/src/Flux/followups/inbox/`) before you
+1. **Read the whole inbox** (`$FLUX_DIR/followups/inbox/`) before you
    decide anything, and pull main first, because captures land there from
    every session on every machine. If the inbox is empty, report that and
    stop.

@@ -21,22 +21,22 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/src/Flux/hooks/flux-sync.sh",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/flux-sync.sh\"",
             "timeout": 20
           },
           {
             "type": "command",
-            "command": "bash ~/src/Flux/hooks/checkouts-sync.sh",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/checkouts-sync.sh\"",
             "timeout": 25
           },
           {
             "type": "command",
-            "command": "bash ~/src/Flux/hooks/skills-relink.sh",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/skills-relink.sh\"",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "bash ~/src/Flux/hooks/debt-review-nudge.sh",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/debt-review-nudge.sh\"",
             "timeout": 5
           }
         ]
@@ -47,12 +47,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/src/Flux/hooks/drain-to-staging.sh",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/drain-to-staging.sh\"",
             "timeout": 15
           },
           {
             "type": "command",
-            "command": "bash ~/src/Flux/hooks/auto-commit-push.sh",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/auto-commit-push.sh\"",
             "timeout": 30
           }
         ]
@@ -64,12 +64,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/src/Flux/hooks/shared-checkout-guard.sh",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/shared-checkout-guard.sh\"",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "bash ~/src/Flux/hooks/git-fetch-freshness.sh",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/git-fetch-freshness.sh\"",
             "timeout": 20
           }
         ]
@@ -81,7 +81,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/src/Flux/hooks/test-output-nudge.sh",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/test-output-nudge.sh\"",
             "timeout": 5
           }
         ]
@@ -91,7 +91,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/src/Flux/hooks/skill-usage-log.sh",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/skill-usage-log.sh\"",
             "timeout": 5
           }
         ]
@@ -102,7 +102,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/src/Flux/hooks/skill-usage-log.sh",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/skill-usage-log.sh\"",
             "timeout": 5
           }
         ]

@@ -68,6 +68,9 @@ check "last cd wins"                 "/two"  "$(resolve_command_dir 'cd /one && 
 check "git -C beats a later cd"      "/exp"  "$(resolve_command_dir 'git -C /exp log && cd /other' /FB)"
 check "separator trimmed off cd"     "/x/y"  "$(resolve_command_dir 'cd /x/y; git log' /FB)"
 check "tilde expanded"               "$HOME/src/Flux" "$(resolve_command_dir 'cd ~/src/Flux && git add -A' /FB)"
+check "\$FLUX_DIR expanded"          "/flux"  "$(FLUX_DIR=/flux resolve_command_dir 'git -C $FLUX_DIR add -A' /FB)"
+check "\${FLUX_DIR} expanded"        "/flux"  "$(FLUX_DIR=/flux resolve_command_dir 'git -C "${FLUX_DIR}" add -A' /FB)"
+check "\$FLUX_SRC_ROOT expanded"     "/src/x" "$(FLUX_SRC_ROOT=/src resolve_command_dir 'cd $FLUX_SRC_ROOT/x && git add -A' /FB)"
 check "non-git command falls back"   "/FB"   "$(resolve_command_dir 'echo hello' /FB)"
 
 printf '\n  %d passed, %d failed\n' "$PASS" "$FAIL"

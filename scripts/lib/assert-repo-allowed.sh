@@ -12,7 +12,8 @@
 #   assert-repo-allowed.sh <repo-name>
 #
 # Environment:
-#   FLUX_SRC_ROOT  directory holding the checkouts (default $HOME/src)
+#   FLUX_SRC_ROOT  directory holding the checkouts (default: the directory
+#                  holding the Flux checkout)
 #
 # Exit codes:
 #   0  lessons may be routed into the repo
@@ -29,7 +30,7 @@ if [ "$#" -ne 1 ] || [ -z "${1:-}" ]; then
 fi
 
 repo="$1"
-SRC_ROOT="${FLUX_SRC_ROOT:-$HOME/src}"
+SRC_ROOT="${FLUX_SRC_ROOT:-$(cd -P "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)}"
 
 if [ "$repo" = "flux" ]; then
   exit 0

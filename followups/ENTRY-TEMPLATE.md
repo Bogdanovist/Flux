@@ -95,7 +95,7 @@ by anything already planned>.
   2. timestamp="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   3. The inbox is ALWAYS Flux-central — never the repo you happen to
      be working in. Use the absolute path
-     `~/src/Flux/followups/inbox` (mkdir -p it).
+     `$FLUX_DIR/followups/inbox` (mkdir -p it).
      Do NOT resolve via `$CLAUDE_PROJECT_DIR`: an implementer or session
      running in a project worktree would otherwise scatter follow-ups
      into that repo instead of the one central inbox.

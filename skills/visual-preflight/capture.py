@@ -2,7 +2,7 @@
 
 Run from a Streamlit project's repo root:
 
-    uv run python ~/src/Flux/skills/visual-preflight/capture.py \\
+    uv run python $FLUX_DIR/skills/visual-preflight/capture.py \\
         --app src/app.py \\
         --out .visual-preflight-screenshots
 

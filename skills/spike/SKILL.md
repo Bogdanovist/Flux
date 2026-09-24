@@ -20,7 +20,7 @@ settle an implementation uncertainty.
 One worktree per idea being spiked, in the repo the question is about:
 
 ```
-git -C ~/src/<repo> worktree add ~/src/<repo>-worktrees/spike-<slug> \
+git -C $FLUX_SRC_ROOT/<repo> worktree add $FLUX_SRC_ROOT/<repo>-worktrees/spike-<slug> \
   -b spike/<slug> origin/main
 ```
 

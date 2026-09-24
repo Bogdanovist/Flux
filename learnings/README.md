@@ -129,7 +129,7 @@ When you approve a proposal, `/curate` applies it to one of:
 
 - **A project repo** — its `AGENTS.md`, `CLAUDE.md`, or
   `.claude/<path>.md`. The repo qualifies when it has a checkout under
-  `~/src`, which is also the only state in which the curator can read the
+  `$FLUX_SRC_ROOT`, which is also the only state in which the curator can read the
   text it proposes to change. The change goes on a `lessons/*` branch and
   through a PR, like any other change to that repo.
 - **Flux** — additionally `agents/<name>.md`, `skills/<skill>/SKILL.md` and

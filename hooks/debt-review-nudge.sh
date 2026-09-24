@@ -30,7 +30,7 @@
 # banner mid-session would just be noise.
 #
 # Environment (overridable for testing):
-#   FLUX_DIR              root of the Flux meta-repo (default $HOME/src/Flux)
+#   FLUX_DIR              root of the Flux meta-repo (default: the checkout holding this hook)
 #   FOLLOWUP_TRIGGER_COUNT   count threshold (default 8)
 #   FOLLOWUP_TRIGGER_DAYS    age threshold in days (default 7)
 #   FLUX_TODAY            override today's date as YYYY-MM-DD (testing)
@@ -45,7 +45,7 @@ if [ "$SOURCE" = "compact" ]; then
   exit 0
 fi
 
-FLUX="${FLUX_DIR:-$HOME/src/Flux}"
+FLUX="${FLUX_DIR:-$(cd -P "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 INBOX="$FLUX/followups/inbox"
 SENTINEL="$FLUX/learnings/.curation-needed"
 REMINDERS="$FLUX/reminders"

@@ -30,7 +30,7 @@
 # and says nothing when the checkout is current.
 #
 # Environment (overridable for testing):
-#   FLUX_DIR           root of the Flux context repo (default $HOME/src/Flux)
+#   FLUX_DIR           root of the Flux context repo (default: the checkout holding this hook)
 #   FLUX_SYNC_TIMEOUT  seconds to bound the fetch (default 10)
 #   SKILL_USAGE_LOG      log the rollup aggregates (see scripts/rollup-skill-usage.sh)
 
@@ -45,7 +45,7 @@ if [ "$SOURCE" = "compact" ]; then
   exit 0
 fi
 
-FLUX="${FLUX_DIR:-$HOME/src/Flux}"
+FLUX="${FLUX_DIR:-$(cd -P "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 FETCH_TIMEOUT="${FLUX_SYNC_TIMEOUT:-10}"
 
 # Resolve the repo physically. Hooks are invoked through ~/.claude/hooks,

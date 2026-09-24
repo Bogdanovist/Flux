@@ -116,7 +116,7 @@ After selecting an approach, document it:
 2. **Validate each section** before continuing
 3. **Adjust based on feedback**
 4. **Save final design** into the project's working doc,
-   `~/src/Flux/projects/<slug>/plan.md` — `open-project` owns the header
+   `$FLUX_DIR/projects/<slug>/plan.md` — `open-project` owns the header
    contract and the worktree it is written in
 
 Design document structure:
@@ -175,7 +175,7 @@ After brainstorming, guide to appropriate next step:
 **If design is complete and validated:**
 
 ```text
-"Design documented at ~/src/Flux/projects/<slug>/plan.md
+"Design documented at $FLUX_DIR/projects/<slug>/plan.md
 
 Next step per the core loop (AGENTS.md): commit the doc to Flux main and
 put it to the user, per open-project §Where the doc is written. If the risk

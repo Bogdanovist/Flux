@@ -49,14 +49,14 @@ Record everything else, and lose nothing.
      `lessons/<slug>` from the destination file's slug:
 
      ```bash
-     git -C ~/src/<repo> fetch origin
-     git -C ~/src/<repo> worktree add \
-       ~/src/<repo>-worktrees/lessons-<slug> -b lessons/<slug> origin/main
+     git -C $FLUX_SRC_ROOT/<repo> fetch origin
+     git -C $FLUX_SRC_ROOT/<repo> worktree add \
+       $FLUX_SRC_ROOT/<repo>-worktrees/lessons-<slug> -b lessons/<slug> origin/main
      ```
 
      Run the branch guard twice, after the add and again before the push:
      `bash <cwd>/scripts/lib/assert-branch-lessons.sh -C <worktree>`.
-   - For a change to Flux itself, commit on `main` in `~/src/Flux`. Flux is
+   - For a change to Flux itself, commit on `main` in `$FLUX_DIR`. Flux is
      your own context repo, so a branch here buys a review nobody is waiting
      to give.
    - Before every Edit or Write, whichever the destination:

@@ -51,7 +51,7 @@ link_item() {
   echo "  Linked $target -> $source"
 }
 
-for item in AGENTS.md CLAUDE.md settings.json agents; do
+for item in AGENTS.md CLAUDE.md settings.json agents hooks; do
   link_item "$item"
 done
 
@@ -64,6 +64,16 @@ else
   echo "  settings.local.json already exists (kept as-is)"
 fi
 link_item settings.local.json
+
+# The checkout's location is this machine's choice, and the repos Flux works on
+# sit beside it. Hooks, scripts and skill commands read both paths from these
+# variables, which Claude Code passes to every hook and Bash command.
+FLUX_SRC_ROOT="$(dirname "$REPO_DIR")"
+tmp="$(mktemp)"
+jq --arg flux "$REPO_DIR" --arg src "$FLUX_SRC_ROOT" \
+  '.env = ((.env // {}) + {FLUX_DIR: $flux, FLUX_SRC_ROOT: $src})' \
+  "$REPO_DIR/settings.local.json" >"$tmp" && mv "$tmp" "$REPO_DIR/settings.local.json"
+echo "  Set FLUX_DIR=$REPO_DIR and FLUX_SRC_ROOT=$FLUX_SRC_ROOT in settings.local.json"
 
 # Some filesystems drop the execute bit on clone, and every hook runs as a
 # script.

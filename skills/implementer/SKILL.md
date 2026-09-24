@@ -24,7 +24,7 @@ For genuinely trivial work — a typo, a one-line rename — skip the skill.
    moved? Proceed only if the answer is a one-clause "no", and say it aloud.
    If you have any doubt, stop and hand the re-cut back.
 1. **Worktree.** Fetch, then create the branch worktree at
-   `~/src/<repo>-worktrees/<branch-slug>` off the base ref (`main`, or the
+   `$FLUX_SRC_ROOT/<repo>-worktrees/<branch-slug>` off the base ref (`main`, or the
    predecessor branch when stacking). Run one editing agent per worktree,
    ever. Check `git stash list` for interrupted prior work first.
 2. **Implement.** One `tracer-implementer` worker per slug, serial, on the

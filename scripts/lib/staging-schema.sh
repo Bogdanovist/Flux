@@ -94,7 +94,7 @@ _STAGING_BLOCKLIST_PATTERNS=(
 # Root holding the project checkouts a lesson can be routed into. A
 # repo is curatable when it has a checkout here, which is also the only
 # state in which the curator can read the text it proposes to change.
-_STAGING_SRC_ROOT="${FLUX_SRC_ROOT:-$HOME/src}"
+_STAGING_SRC_ROOT="${FLUX_SRC_ROOT:-$(cd -P "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)}"
 
 # Emit a message to stderr prefixed with the function-under-test name
 # so failures in test harnesses are easy to trace.

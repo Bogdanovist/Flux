@@ -15,7 +15,7 @@
 # laptop.
 #
 # Environment (overridable for testing):
-#   FLUX_DIR             root of the Flux context repo (default $HOME/src/Flux)
+#   FLUX_DIR             root of the Flux context repo (default: the checkout holding this hook)
 #   FLUX_FETCH_TIMEOUT   seconds to bound the divergence-check fetch (default 10)
 
 FETCH_TIMEOUT="${FLUX_FETCH_TIMEOUT:-10}"
@@ -221,7 +221,7 @@ report_uncommitted() {
   echo "${label}: ${staged} staged, ${unstaged} modified, ${untracked} untracked and uncommitted. Sessions share this checkout, so none of it is auto-committed and most of it belongs to other sessions — commit the files your own change touched and leave the rest." >&2
 }
 
-FLUX="${FLUX_DIR:-$HOME/src/Flux}"
+FLUX="${FLUX_DIR:-$(cd -P "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
 # 1. Auto-commit the current project — unless it *is* the Flux context repo,
 #    which the Flux pass below handles with report-and-push semantics. Without

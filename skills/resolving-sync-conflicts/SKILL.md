@@ -1,12 +1,12 @@
 ---
 name: resolving-sync-conflicts
-description: What to do when git in the shared Flux checkout is in a state you did not create — a rebase that conflicted, a stash holding another session's edits, an index.lock, a half-finished rebase, unpushed commits, files in the tree that are not yours. Use the moment any of those appears, before running a second git command. Applies to `~/src/Flux`, which every session on a machine shares.
+description: What to do when git in the shared Flux checkout is in a state you did not create — a rebase that conflicted, a stash holding another session's edits, an index.lock, a half-finished rebase, unpushed commits, files in the tree that are not yours. Use the moment any of those appears, before running a second git command. Applies to `$FLUX_DIR`, which every session on a machine shares.
 user-invocable: true
 ---
 
 # Resolving sync conflicts
 
-Every session on a machine works in one `~/src/Flux` checkout, and your other
+Every session on a machine works in one `$FLUX_DIR` checkout, and your other
 machines push to `main` from theirs. So the tree you are looking at holds
 another session's half-written files, and `origin/main` moves under you while
 you work. That sharing is what makes a capture reach every machine you work
@@ -57,7 +57,7 @@ The hook reports the conflicting files and who pushed the incoming commits, and
 has already run `git rebase --abort`. Your commits are still local; origin is
 untouched.
 
-1. `git -C ~/src/Flux fetch origin && git -C ~/src/Flux log --oneline HEAD..@{u}`
+1. `git -C $FLUX_DIR fetch origin && git -C $FLUX_DIR log --oneline HEAD..@{u}`
    — read what landed.
 2. If the incoming change makes yours unnecessary, drop yours with
    `git reset --keep @{u}`. Not `--hard`, which deletes every uncommitted
@@ -77,7 +77,7 @@ The hook says the edits are preserved in `git stash`. They are not in the tree,
 and **they are probably not yours** — the autostash sweeps whatever the shared
 tree held.
 
-1. `git -C ~/src/Flux stash show -p` — read it before touching it.
+1. `git -C $FLUX_DIR stash show -p` — read it before touching it.
 2. Every file in it that you did not edit belongs to another session. Do not pop.
 3. If it is all yours: `git stash pop`.
 4. If any of it is not: leave the stash, and report which files and which stash
@@ -111,7 +111,7 @@ and usually clears in seconds.
 3. If a git process is live, wait, however long it takes. Interrupting a commit
    mid-write leaves a corrupt index.
 4. Only with no live git process, and a lock file older than the oldest git
-   process on the box, remove it: `rm ~/src/Flux/.git/index.lock`. Say in your
+   process on the box, remove it: `rm $FLUX_DIR/.git/index.lock`. Say in your
    response that you did.
 
 ### F. A rebase is already in flight
@@ -120,7 +120,7 @@ and usually clears in seconds.
 else. A session died mid-rebase, and **it was not necessarily yours.**
 
 1. Check for a live rebase first, as in **E**. If one is running, wait.
-2. With none running, `git -C ~/src/Flux rebase --abort` returns the tree to
+2. With none running, `git -C $FLUX_DIR rebase --abort` returns the tree to
    the commit it started from. Nothing committed is lost.
 3. If `--abort` fails because no rebase is in progress, the directory is a
    leftover. Report it, and do not delete it by hand.
@@ -156,7 +156,7 @@ suite fails and whose edit causes it, and leave your commit uncommitted.
 ### J. `shared-checkout-guard` blocked the command
 
 `hooks/shared-checkout-guard.sh` refuses sweeping adds and discarding commands
-when it resolves the command's directory to `~/src/Flux`. It resolves that
+when it resolves the command's directory to `$FLUX_DIR`. It resolves that
 directory from a leading `cd` in the command, falling back to the session's own
 directory when the `cd` target is a shell variable it cannot expand. So a
 genuinely unrelated command in a temp repo is blocked whenever its path is
@@ -169,7 +169,7 @@ Reach for the literal path before the override:
 - `cd "$TMP" && git reset --hard` does not resolve, and is blocked.
 
 `FLUX_GUARD_SKIP=1` exists and is logged. Use it only when you have already
-confirmed the target is not `~/src/Flux`, and say in your response why. Never
+confirmed the target is not `$FLUX_DIR`, and say in your response why. Never
 use it to get past a block inside the shared checkout. There, the guard is right
 and your command is wrong.
 

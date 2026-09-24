@@ -65,11 +65,11 @@ mkdir -p "$TARGET_DIR" 2>/dev/null || emit "[skills-relink] Could not create ${T
 FLUX_REAL="$(cd -P "$FLUX" && pwd)"
 
 # Does this link target sit inside the Flux repo? Matched on the raw target
-# string against the spellings a link here can plausibly carry — the physical
-# path, the configured path, and the conventional checkout location.
+# string against the two spellings a link here can carry — the physical path
+# and the configured path.
 in_flux() {
   case "$1" in
-    "$FLUX_REAL"/*|"$FLUX"/*|"$HOME/src/Flux"/*) return 0 ;;
+    "$FLUX_REAL"/*|"$FLUX"/*) return 0 ;;
     *) return 1 ;;
   esac
 }

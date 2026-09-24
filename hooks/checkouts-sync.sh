@@ -27,7 +27,8 @@
 # It is a nudge, not a gate: never blocks session start, always exits 0.
 #
 # Environment (overridable for testing):
-#   FLUX_SRC_ROOT         directory holding the checkouts (default $HOME/src)
+#   FLUX_SRC_ROOT         directory holding the checkouts (default: the
+#                         directory holding the Flux checkout)
 #   FLUX_SYNC_TIMEOUT     seconds to bound each fetch (default 10)
 #   FLUX_SYNC_SKIP        space-separated basenames to leave alone
 
@@ -40,7 +41,7 @@ INPUT=$(cat 2>/dev/null || true)
 SOURCE=$(printf '%s' "$INPUT" | jq -r '.source // empty' 2>/dev/null || true)
 [ "$SOURCE" = "compact" ] && exit 0
 
-SRC_ROOT="${FLUX_SRC_ROOT:-$HOME/src}"
+SRC_ROOT="${FLUX_SRC_ROOT:-$(cd -P "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 FETCH_TIMEOUT="${FLUX_SYNC_TIMEOUT:-10}"
 # Flux itself is flux-sync.sh's job — it speaks about rules rather than
 # code. Two hooks fast-forwarding one checkout would race for the same
@@ -76,7 +77,7 @@ source "$SYNC_LIB"
 
 # --- Discover the main checkouts. ---
 # A linked worktree's .git is a file, not a directory: skipping those keeps
-# the hook off ~/src/<repo>-worktrees/* and off any worktree parked
+# the hook off $FLUX_SRC_ROOT/<repo>-worktrees/* and off any worktree parked
 # elsewhere, so it only ever moves a branch someone deliberately checked
 # out as the repo's primary tree.
 REPOS=()

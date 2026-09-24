@@ -16,22 +16,22 @@ here.
 One place, for every repo:
 
 ```
-~/src/{REPO}-worktrees/{branch-slug}
+$FLUX_SRC_ROOT/{REPO}-worktrees/{branch-slug}
 ```
 
 Turn the branch name into the slug by replacing each `/` with `-`, so the
 branch `matt/study-calculator` gets the directory
-`~/src/Flux-worktrees/matt-study-calculator`.
+`$FLUX_SRC_ROOT/Flux-worktrees/matt-study-calculator`.
 
 Use this path and no other. `scripts/cleanup-merged-worktrees.sh` walks
-`~/src/*-worktrees/*/` and reaps nothing outside it, so a worktree you put
+`$FLUX_SRC_ROOT/*-worktrees/*/` and reaps nothing outside it, so a worktree you put
 anywhere else survives its merged PR and nobody finds it again.
 
 ## Create one
 
 ```
-git -C ~/src/{REPO} fetch origin
-git -C ~/src/{REPO} worktree add ~/src/{REPO}-worktrees/{branch-slug} \
+git -C $FLUX_SRC_ROOT/{REPO} fetch origin
+git -C $FLUX_SRC_ROOT/{REPO} worktree add $FLUX_SRC_ROOT/{REPO}-worktrees/{branch-slug} \
   -b {branch} origin/main
 ```
 
@@ -56,7 +56,7 @@ Not every repo's default branch is `main`. Check before you assume.
 
 Flux is your own context repo, and every change to it — the charter, the
 skills, the rules, a project doc, a capture — commits in the shared
-`~/src/Flux` checkout and pushes to `main`.
+`$FLUX_DIR` checkout and pushes to `main`.
 
 Take a worktree here only for a reason you can state, and say the reason when
 you take one: a change you want to be able to abandon cleanly, or one whose
@@ -72,8 +72,8 @@ before you run a second git command.
 ## Reap it
 
 ```
-~/src/Flux/scripts/cleanup-merged-worktrees.sh          # dry run
-~/src/Flux/scripts/cleanup-merged-worktrees.sh --apply
+$FLUX_DIR/scripts/cleanup-merged-worktrees.sh          # dry run
+$FLUX_DIR/scripts/cleanup-merged-worktrees.sh --apply
 ```
 
 The script asks `gh` whether each worktree's PR merged or closed, and removes
@@ -87,6 +87,6 @@ metadata pointing at a directory that no longer exists, and the next
 To remove one by hand, from the main checkout:
 
 ```
-git -C ~/src/{REPO} worktree remove ~/src/{REPO}-worktrees/{branch-slug}
-git -C ~/src/{REPO} worktree prune
+git -C $FLUX_SRC_ROOT/{REPO} worktree remove $FLUX_SRC_ROOT/{REPO}-worktrees/{branch-slug}
+git -C $FLUX_SRC_ROOT/{REPO} worktree prune
 ```

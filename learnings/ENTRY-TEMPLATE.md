@@ -49,7 +49,7 @@ proposed-text: |
                    against the destination the curator ACTUALLY PICKS at
                    promote time — not against whatever the lesson
                    suggested. The shapes that guard accepts:
-                     a project repo with a checkout under ~/src:
+                     a project repo with a checkout under $FLUX_SRC_ROOT:
                        <repo>/AGENTS.md
                        <repo>/CLAUDE.md
                        <repo>/.claude/<path>.md

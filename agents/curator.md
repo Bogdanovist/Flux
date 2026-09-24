@@ -71,7 +71,7 @@ Give every proposal one of exactly two shapes:
 
 The invoking conductor supplies:
 
-1. **The orchestrator's CWD** — `~/src/Flux/`. Resolve
+1. **The orchestrator's CWD** — `$FLUX_DIR/`. Resolve
    `learnings/staging.md` and `learnings/evidence.md` relative to it.
 2. **Staging already drained** — `/curate` drains `learnings/pending/`
    into `learnings/staging.md` before spawning this agent, inside the
@@ -213,10 +213,10 @@ the queue most-compelling first.
 
 #### Repo identifier → on-disk read path
 
-A `target` names a repo by its checkout name under `~/src`. Resolve
-`~/src/<repo>` and read `main` there directly — this agent creates no
+A `target` names a repo by its checkout name under `$FLUX_SRC_ROOT`. Resolve
+`$FLUX_SRC_ROOT/<repo>` and read `main` there directly — this agent creates no
 worktrees. A repo id with no checkout is unreadable, so record its cluster
-as `pending: no checkout under ~/src` and surface nothing: a proposal
+as `pending: no checkout under $FLUX_SRC_ROOT` and surface nothing: a proposal
 quoting text nobody has read is the one failure this whole pass exists to
 prevent.
 
@@ -266,7 +266,7 @@ The conductor applies the ledger updates, appends verbatim originals to
 ## Operational notes
 
 - All paths resolve relative to the orchestrator's CWD (the Flux repo).
-  Read candidate artifacts in project repos via absolute `~/src/<repo>`
+  Read candidate artifacts in project repos via absolute `$FLUX_SRC_ROOT/<repo>`
   paths from the table — read-only, on whatever `main` currently is.
 - The ledger is bounded on purpose: read all of it, but keep your proposed
   updates compact. If `evidence.md` itself is drifting large (many

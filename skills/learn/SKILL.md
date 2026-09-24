@@ -64,7 +64,7 @@ Then stop. Do not write a file.
    ```
 
 3. **Write the pending file.** The pending directory is
-   `~/src/Flux/learnings/pending` (`mkdir -p` it if missing) — always
+   `$FLUX_DIR/learnings/pending` (`mkdir -p` it if missing) — always
    the Flux repo, whatever repo the session runs in: the drain reads only
    Flux's pending pile, so a capture written into a project repo's tree
    is a capture nothing ever reads. Filename:
@@ -103,7 +103,7 @@ Then stop. Do not write a file.
 
    ```bash
    bash -c 'source "$1"; validate_staging_entry "$2"' _ \
-     $HOME/src/Flux/scripts/lib/staging-schema.sh \
+     $FLUX_DIR/scripts/lib/staging-schema.sh \
      "$tmp_path"
    ```
 
@@ -125,9 +125,9 @@ Then stop. Do not write a file.
    reaches main without depending on anything else happening:
 
    ```bash
-   git -C ~/src/Flux add learnings/pending/<filename>
-   git -C ~/src/Flux commit -m "learn: capture one pending lesson"
-   git -C ~/src/Flux push || { git -C ~/src/Flux pull --rebase && git -C ~/src/Flux push; }
+   git -C $FLUX_DIR add learnings/pending/<filename>
+   git -C $FLUX_DIR commit -m "learn: capture one pending lesson"
+   git -C $FLUX_DIR push || { git -C $FLUX_DIR pull --rebase && git -C $FLUX_DIR push; }
    ```
 
    A push that still fails leaves the commit local — say so when echoing

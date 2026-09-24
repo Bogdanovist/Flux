@@ -6,7 +6,7 @@ description: Open a piece of work — create its working doc in Flux's projects/
 # Open project
 
 If the work is more than trivial, give it a working doc in
-`~/src/Flux/projects/<slug>/`. The doc records what you are attempting and
+`$FLUX_DIR/projects/<slug>/`. The doc records what you are attempting and
 why, and a session six weeks from now must be able to read it with no memory
 of this conversation. Write `<slug>` in kebab-case, and make it specific
 enough to find later: `photo-import-dedupe`, not `photos`.
@@ -58,7 +58,7 @@ these heuristics:
 
 ## Where the doc is written
 
-Commit the doc straight to `main` in `~/src/Flux` and push it. A branch here
+Commit the doc straight to `main` in `$FLUX_DIR` and push it. A branch here
 needs a reason you can state, and a plan is rarely one: a plan stranded on a
 branch is a plan your other machines cannot read.
 

@@ -15,6 +15,9 @@ review the real change.
 Work context lives in a separate repo and never crosses into this one. Do not
 carry a rule, a record or a domain fact between the two.
 
+Work only in the repos beside Flux in the Flux root, `$FLUX_SRC_ROOT`. Never
+use a cloud, database or work credential that you find on the machine.
+
 ## Where context lives
 
 Put context at the lowest level that can carry it. Reach for Flux only when
@@ -276,20 +279,20 @@ work on its diff, where a reader can read the whole of it.
 
 ## Worktrees and agent safety
 
-Edits land in project repos, but `~/src/{REPO}/` is usually on another branch.
+Edits land in project repos, but `$FLUX_SRC_ROOT/{REPO}/` is usually on another branch.
 Do not edit it directly, and do not invent ad-hoc sibling paths. One worktree
 per branch:
 
 ```bash
-git -C ~/src/{REPO} fetch origin
-git -C ~/src/{REPO} worktree add ~/src/{REPO}-worktrees/{branch-slug} -b {branch} origin/main
-cd ~/src/{REPO}-worktrees/{branch-slug}
+git -C $FLUX_SRC_ROOT/{REPO} fetch origin
+git -C $FLUX_SRC_ROOT/{REPO} worktree add $FLUX_SRC_ROOT/{REPO}-worktrees/{branch-slug} -b {branch} origin/main
+cd $FLUX_SRC_ROOT/{REPO}-worktrees/{branch-slug}
 ```
 
 `{branch-slug}` is the branch name with `/` replaced by `-`. Run every git,
 build and test command from inside the worktree, and return to Flux only to
 write context. Reap merged worktrees with
-`~/src/Flux/scripts/cleanup-merged-worktrees.sh [--apply]`; use `git worktree
+`$FLUX_DIR/scripts/cleanup-merged-worktrees.sh [--apply]`; use `git worktree
 remove`, never `rm -rf`.
 
 **One editing agent per worktree, never two.** Editing means anything that
@@ -315,7 +318,7 @@ to get past it.
 
 ## Working in Flux itself
 
-Several sessions work in the one `~/src/Flux` checkout on `main` at once, and
+Several sessions work in the one `$FLUX_DIR` checkout on `main` at once, and
 that is the normal condition. Commits you did not make will appear in the log,
 `main` will move under you, and `git status` will show files another session
 is mid-edit. None of that is a fault, and none of it needs investigating.

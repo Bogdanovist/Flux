@@ -97,6 +97,14 @@ resolve_command_dir() {
   if [[ "$dir" == "~" || "$dir" == "~/"* ]]; then
     dir="${HOME}${dir:1}"
   fi
+  # Skills name the checkouts through these variables, so a guard that left
+  # them literal would never match the Flux checkout.
+  local var
+  for var in FLUX_DIR FLUX_SRC_ROOT HOME; do
+    [[ -n "${!var:-}" ]] || continue
+    dir="${dir//\$\{$var\}/${!var}}"
+    dir="${dir//\$$var/${!var}}"
+  done
   [[ -n "$dir" ]] || dir="$fallback"
 
   printf '%s\n' "$dir"

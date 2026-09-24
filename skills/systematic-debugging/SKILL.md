@@ -193,7 +193,7 @@ For data-shaped bugs, bias hypothesis ranking toward these — they dominate by 
      rules don't yet name the pattern that bites. Write **one**
      pending lesson capturing the rule in evergreen prose, following
      the emission recipe in
-     `~/src/Flux/learnings/ENTRY-TEMPLATE.md`
+     `$FLUX_DIR/learnings/ENTRY-TEMPLATE.md`
      ("How to emit a lesson from a skill").
    - The `proposed-text` is the rule as you'd want a future reviewer
      to see it — not a description of this specific bug. The

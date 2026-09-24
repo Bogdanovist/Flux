@@ -29,12 +29,14 @@
 # Escape hatch: prefix the command with `FLUX_GUARD_SKIP=1 ` inline (parsed
 # out of the command string, so it works from the Bash tool); logged.
 #
-# Tunables (env): FLUX_DIR (default $HOME/src/Flux),
+# Tunables (env): FLUX_DIR (default: the checkout holding this hook),
 # FLUX_GUARD_SKIP=1 (bypass), FLUX_LOG_DIR.
 
 set -uo pipefail
 
-FLUX="${FLUX_DIR:-$HOME/src/Flux}"
+FLUX="${FLUX_DIR:-$(cd -P "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+# Commands name the checkout as `$FLUX_DIR`; the parser expands it from here.
+export FLUX_DIR="$FLUX"
 LOG_DIR="${FLUX_LOG_DIR:-${HOME}/.claude/logs}"
 LOG_FILE="${LOG_DIR}/shared-checkout-guard.log"
 
@@ -99,7 +101,7 @@ while IFS= read -r seg; do
   # Classification must see past the global options that can sit between
   # `git` and its subcommand. resolve_command_dir above already honours
   # `git -C <dir>` when deciding which repo a command acts on, so a segment
-  # like `git -C ~/src/Flux add -A` resolves to the shared checkout — and
+  # like `git -C "$FLUX_DIR" add -A` resolves to the shared checkout — and
   # would then slip through every pattern below, all anchored on the
   # subcommand following `git` directly. `-c <name>=<value>` is stripped on
   # the same grounds.

@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # cleanup-merged-worktrees.sh — reap cross-repo worktrees whose PRs are merged.
 #
-# Walks every ~/src/*-worktrees/*/ directory, identifies the branch checked out
+# Walks every $FLUX_SRC_ROOT/*-worktrees/*/ directory, identifies the branch checked out
 # there, asks `gh` whether its PR is merged or closed, and removes the worktree
 # if so. Refuses to remove anything with uncommitted changes or unpushed
 # commits — those need human eyes.
 #
 # Dry-run by default. Pass --apply to actually run `git worktree remove`.
 #
-# Convention this assumes is documented in ~/src/Flux/AGENTS.md under
+# Convention this assumes is documented in Flux's AGENTS.md under
 # "Worktrees and agent safety", with the recipe in the git-worktrees skill.
 
 set -euo pipefail
@@ -31,7 +31,9 @@ removed=0
 kept=0
 skipped=0
 
-for wt in "$HOME"/src/*-worktrees/*/; do
+SRC_ROOT="${FLUX_SRC_ROOT:-$(cd -P "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
+
+for wt in "$SRC_ROOT"/*-worktrees/*/; do
   wt="${wt%/}"
 
   # Only proceed if this looks like a git worktree (has .git as file pointing
