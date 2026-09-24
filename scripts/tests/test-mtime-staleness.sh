@@ -101,7 +101,7 @@ make_old "$TMP/fresh/.git/FETCH_HEAD"
 got=$(run_freshness 'git log origin/main -1')
 check "freshness hook: stale FETCH_HEAD exits 0" "0" "${got%%|*}"
 check "freshness hook: failed fetch reports staleness, not a crash" "note" \
-  "$(case "${got#*|}" in *'refs may be stale'*) echo note ;; '') echo silent ;; *) echo "${got#*|}" ;; esac)"
+  "$(case "${got#*|}" in (*'refs may be stale'*) echo note ;; ('') echo silent ;; (*) echo "${got#*|}" ;; esac)"
 
 rm -f "$TMP/fresh/.git/FETCH_HEAD"
 check "freshness hook: absent FETCH_HEAD exits 0" "0" \
