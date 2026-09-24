@@ -1,0 +1,212 @@
+{
+  "identity": "matthumanhealth@matthumanhealths-MacBook-Pro",
+  "generated_at": "2026-09-24T22:42:29Z",
+  "generated_at_epoch": 1790289749,
+  "records": 260,
+  "skills": {
+    "brainstorming": {
+      "count": 4,
+      "last_used": "2026-09-04T04:04:51Z"
+    },
+    "close-project": {
+      "count": 7,
+      "last_used": "2026-09-04T04:04:51Z"
+    },
+    "codebase-review": {
+      "count": 14,
+      "last_used": "2026-09-04T04:04:52Z"
+    },
+    "context-sweep": {
+      "count": 7,
+      "last_used": "2026-09-04T04:04:52Z"
+    },
+    "curate": {
+      "count": 9,
+      "last_used": "2026-09-12T05:44:56Z"
+    },
+    "database-migrations": {
+      "count": 1,
+      "last_used": "2026-08-07T02:38:23Z"
+    },
+    "dbt-model": {
+      "count": 13,
+      "last_used": "2026-08-08T05:15:30Z"
+    },
+    "explore": {
+      "count": 2,
+      "last_used": "2026-09-04T01:34:20Z"
+    },
+    "explore-problem": {
+      "count": 6,
+      "last_used": "2026-09-04T04:04:53Z"
+    },
+    "followup": {
+      "count": 13,
+      "last_used": "2026-09-12T05:34:05Z"
+    },
+    "gathering-runtime-evidence-infra": {
+      "count": 3,
+      "last_used": "2026-09-04T04:04:54Z"
+    },
+    "gathering-runtime-evidence-pipelines": {
+      "count": 3,
+      "last_used": "2026-09-04T04:04:57Z"
+    },
+    "gathering-runtime-evidence-services": {
+      "count": 4,
+      "last_used": "2026-09-04T04:04:57Z"
+    },
+    "git-worktrees": {
+      "count": 6,
+      "last_used": "2026-09-05T04:57:56Z"
+    },
+    "grilling": {
+      "count": 6,
+      "last_used": "2026-09-04T04:04:58Z"
+    },
+    "handoff": {
+      "count": 3,
+      "last_used": "2026-09-04T04:04:58Z"
+    },
+    "implementer": {
+      "count": 5,
+      "last_used": "2026-09-04T04:04:59Z"
+    },
+    "learn": {
+      "count": 5,
+      "last_used": "2026-09-08T11:37:40Z"
+    },
+    "linear-whip": {
+      "count": 17,
+      "last_used": "2026-09-05T03:56:20Z"
+    },
+    "lite-create-prd": {
+      "count": 1,
+      "last_used": "2026-08-03T22:34:25Z"
+    },
+    "lite-feature-architecture": {
+      "count": 1,
+      "last_used": "2026-08-03T22:34:40Z"
+    },
+    "lite-grilling": {
+      "count": 1,
+      "last_used": "2026-08-03T22:34:36Z"
+    },
+    "lite-implementer": {
+      "count": 1,
+      "last_used": "2026-08-03T22:34:22Z"
+    },
+    "lite-implementer-by-interface": {
+      "count": 1,
+      "last_used": "2026-08-03T22:34:40Z"
+    },
+    "lite-review-solution-design": {
+      "count": 1,
+      "last_used": "2026-08-07T02:31:13Z"
+    },
+    "lite-shape-tracers": {
+      "count": 1,
+      "last_used": "2026-08-03T22:34:29Z"
+    },
+    "lite-solution-design": {
+      "count": 1,
+      "last_used": "2026-08-03T22:34:15Z"
+    },
+    "lite-to-tracers": {
+      "count": 1,
+      "last_used": "2026-08-03T22:34:28Z"
+    },
+    "lite-triaging-incidentals": {
+      "count": 2,
+      "last_used": "2026-08-08T03:06:21Z"
+    },
+    "login": {
+      "count": 3,
+      "last_used": "2026-09-08T03:40:50Z"
+    },
+    "open-project": {
+      "count": 5,
+      "last_used": "2026-09-05T03:43:53Z"
+    },
+    "plan": {
+      "count": 1,
+      "last_used": "2026-08-27T04:21:29Z"
+    },
+    "pr-preflight": {
+      "count": 5,
+      "last_used": "2026-08-17T06:18:44Z"
+    },
+    "pre-push-quality": {
+      "count": 8,
+      "last_used": "2026-08-08T05:18:22Z"
+    },
+    "receiving-code-review": {
+      "count": 3,
+      "last_used": "2026-08-03T11:23:45Z"
+    },
+    "records": {
+      "count": 5,
+      "last_used": "2026-09-05T04:57:56Z"
+    },
+    "resolving-sync-conflicts": {
+      "count": 1,
+      "last_used": "2026-09-23T12:44:04Z"
+    },
+    "review-solution-design": {
+      "count": 1,
+      "last_used": "2026-08-11T07:47:54Z"
+    },
+    "reviewing-diff": {
+      "count": 10,
+      "last_used": "2026-09-04T02:16:22Z"
+    },
+    "shape-tracers": {
+      "count": 5,
+      "last_used": "2026-09-04T04:03:35Z"
+    },
+    "solution-design": {
+      "count": 8,
+      "last_used": "2026-09-05T04:13:18Z"
+    },
+    "spike": {
+      "count": 10,
+      "last_used": "2026-09-04T04:03:36Z"
+    },
+    "systematic-debugging": {
+      "count": 1,
+      "last_used": "2026-09-04T04:03:37Z"
+    },
+    "temporal-workflow": {
+      "count": 3,
+      "last_used": "2026-09-08T03:45:55Z"
+    },
+    "to-tracers": {
+      "count": 7,
+      "last_used": "2026-09-04T04:03:37Z"
+    },
+    "triage": {
+      "count": 6,
+      "last_used": "2026-09-12T05:45:32Z"
+    },
+    "verification-before-completion": {
+      "count": 37,
+      "last_used": "2026-09-04T04:03:38Z"
+    },
+    "visual-preflight": {
+      "count": 1,
+      "last_used": "2026-09-04T04:03:38Z"
+    },
+    "walk-batch": {
+      "count": 3,
+      "last_used": "2026-09-12T05:48:04Z"
+    },
+    "writing-pr-descriptions": {
+      "count": 9,
+      "last_used": "2026-09-16T04:26:25Z"
+    },
+    "writing-skills": {
+      "count": 4,
+      "last_used": "2026-09-08T03:41:21Z"
+    }
+  }
+}
