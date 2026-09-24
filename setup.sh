@@ -54,19 +54,19 @@ link_item() {
   echo "  Linked $target -> $source"
 }
 
-for item in AGENTS.md CLAUDE.md settings.json agents hooks; do
+for item in AGENTS.md CLAUDE.md agents hooks; do
   link_item "$item"
 done
 
-# settings.local.json holds this machine's permissions and MCP config. It is
-# gitignored: created from the template on a first install, never overwritten.
+# settings.local.json holds this machine's settings: permissions, env and
+# hooks that belong to this machine alone. It is gitignored: created from the
+# template on a first install, never overwritten.
 if [ ! -e "$REPO_DIR/settings.local.json" ]; then
   cp "$REPO_DIR/settings.local.example.json" "$REPO_DIR/settings.local.json"
   echo "  Created settings.local.json from the template"
 else
   echo "  settings.local.json already exists (kept as-is)"
 fi
-link_item settings.local.json
 
 # The checkout's location is this machine's choice, and the repos Flux works on
 # sit beside it. Hooks, scripts and skill commands read both paths from these
@@ -77,6 +77,70 @@ jq --arg flux "$REPO_DIR" --arg src "$FLUX_SRC_ROOT" \
   '.env = ((.env // {}) + {FLUX_DIR: $flux, FLUX_SRC_ROOT: $src})' \
   "$REPO_DIR/settings.local.json" >"$tmp" && mv "$tmp" "$REPO_DIR/settings.local.json"
 echo "  Set FLUX_DIR=$REPO_DIR and FLUX_SRC_ROOT=$FLUX_SRC_ROOT in settings.local.json"
+
+# Claude Code reads one user-level settings file, settings.json in the config
+# dir; a settings.local.json there applies only to sessions started in that
+# dir. So the user file is the person's own, and Flux merges into it: the
+# tracked settings.json, then this machine's settings.local.json. The app
+# writes preferences into the same file, so a preference Flux ships is set
+# only where the file has none. Re-run this script after either source
+# changes.
+for name in settings.json settings.local.json; do
+  if [ -L "$CLAUDE_DIR/$name" ] && [ "$(readlink "$CLAUDE_DIR/$name")" = "$REPO_DIR/$name" ]; then
+    rm "$CLAUDE_DIR/$name"
+    echo "  Removed the link $CLAUDE_DIR/$name"
+  fi
+done
+python3 - "$CLAUDE_DIR/settings.json" "$REPO_DIR/settings.json" "$REPO_DIR/settings.local.json" <<'PY'
+import json, os, shutil, sys, time
+
+user_path, *frag_paths = sys.argv[1:]
+frags = [json.load(open(p)) for p in frag_paths]
+
+user = {}
+if os.path.lexists(user_path):
+    if os.path.islink(user_path):
+        sys.exit(f"  {user_path} is a link into another config repo; remove it by hand first.")
+    shutil.copy2(user_path, f"{user_path}.bak.{time.strftime('%Y%m%d-%H%M%S')}")
+    user = json.load(open(user_path))
+
+# A Flux hook runs through the linked hooks dir. A machine hook is owned by
+# its exact command. Both are replaced on every run, so a hook dropped from
+# either source leaves the user file too.
+owned = {h["command"] for f in frags for gs in f.get("hooks", {}).values()
+         for g in gs for h in g.get("hooks", [])}
+def is_flux(command):
+    return command in owned or '/.claude}/hooks/' in command
+
+hooks = user.setdefault("hooks", {})
+for groups in hooks.values():
+    for g in groups:
+        g["hooks"] = [h for h in g.get("hooks", []) if not is_flux(h.get("command", ""))]
+    groups[:] = [g for g in groups if g.get("hooks")]
+
+perms = user.setdefault("permissions", {})
+env = user.setdefault("env", {})
+for frag in frags:
+    for event, groups in frag.get("hooks", {}).items():
+        hooks.setdefault(event, []).extend(groups)
+    env.update(frag.get("env", {}))
+    for key, value in frag.get("permissions", {}).items():
+        if isinstance(value, list):
+            have = perms.setdefault(key, [])
+            have.extend(v for v in value if v not in have)
+        else:
+            perms.setdefault(key, value)
+    for key, value in frag.items():
+        if key not in ("hooks", "env", "permissions", "$schema"):
+            user.setdefault(key, value)
+hooks = {k: v for k, v in hooks.items() if v}
+user["hooks"] = hooks
+
+with open(user_path, "w") as f:
+    json.dump(user, f, indent=2)
+    f.write("\n")
+print(f"  Merged settings.json and settings.local.json into {user_path}")
+PY
 
 # Some filesystems drop the execute bit on clone, and every hook runs as a
 # script.
@@ -108,4 +172,4 @@ if [ "$CLAUDE_DIR" != "$HOME/.claude" ]; then
   echo "Start personal sessions with: CLAUDE_CONFIG_DIR=$CLAUDE_DIR claude"
   echo
 fi
-echo "Next: edit $REPO_DIR/settings.local.json to set this machine's permissions."
+echo "Next: edit $REPO_DIR/settings.local.json to set this machine's settings, then re-run this script."

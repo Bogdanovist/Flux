@@ -12,8 +12,8 @@ works, what it knows, and where its accumulated context lives.
 | Path | What it is |
 |---|---|
 | `AGENTS.md` / `CLAUDE.md` | The charter. `AGENTS.md` is the provider-agnostic source; `CLAUDE.md` imports it and carries only Claude-specific loading notes. |
-| `settings.json` | Claude Code settings, env vars, and hook wiring. |
-| `settings.local.json` | This machine's permissions and MCP config — gitignored, never pushed. |
+| `settings.json` | Claude Code settings, env vars, and hook wiring, merged into the user's own settings file. |
+| `settings.local.json` | This machine's permissions, env and hooks, merged after `settings.json` — gitignored, never pushed. |
 | `skills/` | Every skill, flat, one directory each. All of them install; nothing gates which are active. |
 | `agents/` | Subagent definitions — researcher, debugger, verifier, curator, test-runner, and the rest. |
 | `model-profiles.toml` | The `best` / `mid` / `cheap` tier contract and its provider mappings. |
@@ -41,10 +41,19 @@ scripts touch nothing outside it. `setup.sh` writes both paths into
 parent). Claude Code passes them to every hook and Bash command, and skills
 name paths through them.
 
-`setup.sh` links `AGENTS.md`, `CLAUDE.md`, `settings.json`, `agents/`,
-`hooks/` and `settings.local.json` into `~/.claude`, links each skill into
-`~/.claude/skills/`, installs the repo's pre-commit hook, and backs up
-anything it replaces. Re-run it any time; it converges.
+`setup.sh` links `AGENTS.md`, `CLAUDE.md`, `agents/` and `hooks/` into
+`~/.claude`, links each skill into `~/.claude/skills/`, installs the repo's
+pre-commit hook, and backs up anything it replaces. Re-run it any time; it
+converges.
+
+Claude Code reads one user-level settings file, `~/.claude/settings.json`.
+A `settings.local.json` beside it applies only to sessions started in `~`.
+So `setup.sh` merges into the user file: first the tracked `settings.json`,
+then this machine's `settings.local.json`. Flux's hooks and env replace
+their earlier copies, permission entries are added, and a preference such
+as `model` or `theme` is set only where the file has none, because the app
+writes preferences into the same file. Re-run `setup.sh` after a change to
+either source.
 
 **On a machine that already carries another config repo**, give Flux its own
 config dir instead, because two config repos cannot both own `~/.claude`:
