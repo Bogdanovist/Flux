@@ -257,6 +257,37 @@ Native audio pieces the research names, all [REPORTED]:
 - **End of turn:** Silero VAD runs on Android through ONNX Runtime. A
   common setting treats about 1 s of silence as the end of a turn.
 
+### Q3 — Superwhisper as the recogniser (checked 2026-09-25)
+
+I have a paid Superwhisper licence. Superwhisper 2.18.2 is installed at
+`/Applications/superwhisper.app` [OBSERVED].
+
+- **Its Android app needs taps.** It is a floating bubble: tap to record,
+  tap to stop, and the text goes in at the cursor. The Pro licence covers
+  it (superwhisper.com/docs/get-started/android) [OBSERVED]. The docs name
+  no way for another app to drive it, so it fails C2 on its own.
+- **The Mac app transcribes files, started by a person.** The docs give
+  the menu bar, Finder, and `open <file> -a superwhisper`. The file goes
+  through the active mode's voice model and AI formatting. The docs do not
+  say where the text goes (superwhisper.com/docs/get-started/transcribe-files)
+  [OBSERVED].
+- **The CLI reads history; it does not transcribe.** `superwhisper read`
+  prints the latest transcription (superwhisper.com/docs/get-started/cli)
+  [OBSERVED]. The CLI is not on this Mac's `PATH` [OBSERVED].
+- **The app registers a `superwhisper://` URL scheme and owns the audio
+  file type** (`Info.plist`) [OBSERVED]. The docs do not describe the
+  scheme.
+- **Its Claude Code plugin is Mac-only.** It takes spoken replies and
+  spoken approvals at the Mac, and it does not speak output
+  (superwhisper.com/docs/get-started/coding-agents) [OBSERVED]. The app
+  bundle ships `claude-hook` and `agent-hook` [OBSERVED].
+
+A phone-to-Mac path is possible but rests on undocumented behaviour: the
+phone detects end of turn and uploads a WAV, the Mac runs
+`open <file> -a superwhisper`, then `superwhisper read` returns the text.
+Unknown: whether the result also pastes at the Mac's cursor, whether it
+works with the Mac locked, and how long a turn takes.
+
 ### Next check for Q2
 
 Run a probe on my phone: a minimal page, then a minimal Expo development
