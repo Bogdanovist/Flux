@@ -33,3 +33,10 @@ Records appear below.
 - status: pending
 - fingerprints:
   - 2026-09-25 8bcb6297-5c9d-4566-8513-cdbbe5bd3177 — a server started with `( cmd & )` outlived its call; kill gave "operation not permitted"; run_in_background with TaskStop works
+
+## Sandbox blocks npm and Expo caches, the npm registry, and Node fetch
+- count: 2
+- status: promoted: e34f4b3 — settings.json allows writes to ~/.npm and ~/.expo, allowlists registry.npmjs.org, sets NODE_USE_ENV_PROXY=1
+- fingerprints:
+  - 2026-09-25 ff92f9cd-abd3-419b-af24-ac5c871958c0 — `npm create vite` failed; npm blamed root-owned cache files, but the sandbox denied writes to ~/.npm
+  - 2026-09-25 36e65756-975c-4c0e-92be-6f6f1682833e — Expo upgrade: ~/.npm and ~/.expo denied, Node fetch ignored the proxy, npm retried a blocked registry for 30 minutes

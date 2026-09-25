@@ -34,3 +34,15 @@ proposed-text: |
   not permitted"). Start long-running servers with the Bash tool's
   run_in_background, so TaskStop can stop them.
 ---
+
+---
+disposition: fixed in config — e34f4b3 (sandbox allowWrite ~/.npm ~/.expo, registry.npmjs.org allowlisted, NODE_USE_ENV_PROXY=1) — 2026-09-25
+uuid: 36e65756-975c-4c0e-92be-6f6f1682833e
+timestamp: 2026-09-25T05:11:22Z
+proposed-text: |
+  Sandboxed Node tooling on this machine needs three workarounds, and one sandbox behaviour cost about 40 minutes of hung installs.
+  (1) npm and Expo try to write ~/.npm and ~/.expo, which the sandbox denies; npm misreports this as "cache folder contains root-owned files". Use npm_config_cache=$TMPDIR/npm-cache and __UNSAFE_EXPO_HOME_DIRECTORY=$TMPDIR/expo-home.
+  (2) Node's built-in fetch (used by the Expo CLI and expo-doctor) ignores HTTPS_PROXY and connects directly, failing with EPERM. Set NODE_USE_ENV_PROXY=1 (Node 24).
+  (3) A Bash call whose command contained `rm -rf` had its allowed_domains grant withheld: every registry.npmjs.org connection was denied, and npm retried until it ran out of heap after about 30 minutes. The same npm command without `rm -rf` reached the registry. Run deletions as a separate Bash call.
+  Observed 2026-09-25 while upgrading an Expo app in the tend-to-do repo.
+---
