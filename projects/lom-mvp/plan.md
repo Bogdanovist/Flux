@@ -63,7 +63,9 @@ before the game has any requirements.
 The laptop and the phone join one tailnet. The phone opens
 `http://<laptop-name>:5173`. That URL is reachable only from Matt's devices,
 works away from home Wi-Fi, stays the same between sessions, and carries hot
-reload.
+reload. Vite answers a hostname only when `server.allowedHosts` lists it
+(`isHostAllowedInternal` in Vite 8.3.1 accepts IP addresses and `localhost`
+without a list), so `vite.config.ts` must name the laptop's tailnet hostname.
 
 Consequences: Matt installs Tailscale on the Mac and the phone and signs in
 (Claude cannot install system software). The page is plain HTTP inside the
@@ -100,7 +102,8 @@ Move `CLAUDE.md` to `AGENTS.md` and leave `CLAUDE.md` as a one-line
    `tsc --noEmit`, and one Vitest test that renders the title. The repo
    guidance change above. One PR.
 2. **Title page on the phone.** Matt installs Tailscale and sets
-   `allowLocalBinding`. Add the dev-server rule. Prove it: Claude edits the
+   `allowLocalBinding`. Add the laptop's tailnet hostname to
+   `server.allowedHosts`, and add the dev-server rule. Prove it: Claude edits the
    title text, and the phone shows the new text without a reload. PR carries
    the rule.
 
