@@ -38,8 +38,9 @@ misheard word, is unsafe at the wheel and worse than no harness.
   do with hands and eyes, approvals included. An extra, explicit spoken
   confirmation may guard risky steps. How that confirmation works is an
   open question (Q6).
-- **C5 — Personal first.** The harness is for me. A commercial app is a
-  possibility if it works, and it does not shape choices now.
+- **C5 — Personal use; adopt before building.** The harness is for me. If
+  an existing open-source project meets C1–C4, I use or fork it, and
+  `voice-to-vibe` stays empty or holds the fork.
 
 ## Summary
 
