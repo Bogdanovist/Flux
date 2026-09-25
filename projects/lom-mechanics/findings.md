@@ -56,5 +56,14 @@ through roguelite draws: pick-one-of-three appointments to each government, and
 developments such as oil discoveries or separatist movements. Crises and
 alliances grow out of how the countries form.
 
-Concept doc drafted in https://github.com/Bogdanovist/lines-on-maps/pull/3,
-being settled one open question at a time with Matt. Not yet built.
+Concept 02 (https://github.com/Bogdanovist/lines-on-maps/pull/3) records
+Matt's decisions and the questions left open. Concept 03 forks it, settles
+every open question with Claude's judgement, and is built as the first
+playable sketch (https://github.com/Bogdanovist/lines-on-maps/pull/4).
+
+Measured on the sketch's own simulation (90 seeded runs, 2026-09-25): a player
+who only shores up support survives about half the runs, evenly across
+democracy, kleptocracy and dictatorship; a player who does nothing survives
+about one in ten. Whether that feels right in play is for Matt to judge.
+
+Verdict: pending Matt's play.
