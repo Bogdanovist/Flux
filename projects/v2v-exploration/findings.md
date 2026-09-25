@@ -44,20 +44,20 @@ misheard word, is unsafe at the wheel and worse than no harness.
 
 ## Summary
 
-Q2 has a provisional answer: a native Android app, not mobile web. A
-browser page cannot keep the microphone alive with the screen off, and
-Chrome's continuous speech recognition stops after a few seconds of
-silence. An Expo app with a microphone foreground service is the lightest
-native path. A test on my phone confirms or overturns this.
+No existing project meets C1–C4 as it stands. `1nspectorCat/Claudio-Code`
+comes closest. Its Android audio side handles Bluetooth, the screen-off
+case and interrupting playback. Its gaps are spoken approvals (Q6), output
+made for listening (Q5), and Russian hard-coded throughout. `mbailey/voicemode`
+does not fit: it only uses the microphone and speaker of the Mac that runs
+Claude Code.
 
-Q1 has a provisional answer that changes C3. The official ways to steer an
-existing session from a phone (Remote Control, the Claude app) have no
-interface a third-party app can drive. A harness can steer a real,
-resumable Claude Code session through `claude -p --resume` or the Agent
-SDK, which read and write the same session store as the terminal. That
-session is one I pick up at the desk afterwards, not one the terminal and
-the phone share live. Two open-source Android projects already attempt
-this harness and are worth reading before any build.
+Platform (Q2): a native Android app. A browser page cannot keep the
+microphone alive with the screen off.
+
+Connection (Q1): no documented interface lets a third-party app share a
+live session with the terminal. A harness can drive a real session and hand
+it back to the desk, through `claude -p --resume`, the Agent SDK, or hooks
+plus a relay (the Claudio-Code approach).
 
 The repo `Bogdanovist/voice-to-vibe` is empty (GitHub
 reports `isEmpty: true`, created 2026-09-25) [OBSERVED].
@@ -146,6 +146,61 @@ research agent cited it on 2026-09-25 and I have not re-checked the source.
 **Open for Q1:** whether a headless `--resume` process and an interactive
 terminal on the same session corrupt each other if both run at once. The
 harness design must either forbid that or prove it safe.
+
+### Existing projects evaluated (2026-09-25)
+
+Two read-only research agents read each repo. I checked the claims marked
+[OBSERVED] in a shallow clone of each.
+
+**`1nspectorCat/Claudio-Code`** (MIT, created 2026-08-17, last commit
+2026-09-24, one author):
+
+- **Shape.** An Android app (`app/`, with `BridgeService.kt` at 4724
+  lines [OBSERVED]), a self-hosted Node relay (`server/relay.js`), and Mac
+  glue: a Stop hook that reads each reply aloud (`desktop/readback.py`) and
+  a skill that polls the relay from inside the live Claude Code session
+  (`desktop/skill/voice-bridge/SKILL.md`). The phone and the Mac meet only
+  at the relay, which runs on the LAN at home or on a VPS or tunnel away
+  from it [REPORTED].
+- **Session.** It steers the live interactive session. Spoken text arrives
+  as an ordinary user message on the session's next turn [REPORTED]. This
+  is a live shared session, which Q1 found no official interface for.
+- **Screen off.** A foreground service with a partial wake lock
+  [REPORTED]. The Mac-side poller runs as a Claude Code Monitor. The skill
+  says some Claude Code versions stop a Monitor after 30 minutes and
+  describes re-arming it (`SKILL.md:64-66`) [OBSERVED].
+- **Turn-taking.** Half-duplex: playback pauses while it listens. A
+  headset button or a stop word interrupts playback [REPORTED]. The README
+  says the stop word fails in strong wind, and the headset button does not
+  reach the app while the whisper recorder holds the headset [OBSERVED].
+- **Approvals.** Nothing answers Claude Code's permission prompts.
+  `desktop/` and `server/` contain no mention of "permission" [OBSERVED].
+  A session that stops on a prompt stalls. The only guard is a skill
+  instruction to act on destructive requests only when the phrase carries
+  an agreed code word (`SKILL.md:81-92`) [OBSERVED].
+- **Output.** `readback.py` strips Markdown and reads the reply as written.
+  It does not summarise diffs or tool calls [REPORTED].
+- **Language.** Russian is hard-coded in four places, two of them in the
+  Android app, and the app UI is Russian throughout (README §Using another
+  language) [OBSERVED]. English use needs a rebuilt APK.
+- **Services.** Android's `SpeechRecognizer` (usually Google) or local
+  whisper.cpp for recognition. Microsoft `edge-tts`, a free unofficial
+  service, for speech [REPORTED].
+- **Security.** One shared token in the URL query string, and a pinned
+  self-signed certificate. A leaked token lets someone inject messages into
+  every session [REPORTED].
+
+**`mbailey/voicemode`** (MIT, 1375 stars, active): an MCP server that
+speaks through the Mac's own microphone and speaker. Its changelog records
+the removal of LiveKit rooms and the web frontend, and says "Local
+microphone transport remains the default and only transport option"
+(`CHANGELOG.md:668-676`) [OBSERVED]. A phone cannot join a session. Not
+suitable.
+
+**Build tooling on this Mac (2026-09-25)** [OBSERVED]: no Android SDK
+(`~/Library/Android/sdk` absent), no `adb`, no `gradle`. `tailscale` and
+Node 24 are installed. Rebuilding the Claudio-Code APK needs the Android
+SDK first.
 
 ### Q2 — mobile web against native (researched 2026-09-25)
 
