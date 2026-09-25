@@ -269,10 +269,10 @@ you take one. Review and verification still apply on `main`.
 is built, then run `reviewing-diff` and let its findings land as PR comments
 anchored to the lines they judge. Answer each one with a commit or a reply.
 
-**My merge is my approval.** Never merge a PR yourself, and never approve one:
-handing me a green PR with its review thread on it is where your part ends.
-Stack a dependent slice on the open branch rather than merging to unblock
-yourself.
+**Merging needs my explicit approval.** Merge a PR only when I tell you to
+merge that PR, by name or by clear reference, in this session. An approval
+covers one PR. Never approve a PR on GitHub. Stack a dependent slice on the
+open branch rather than merging to unblock yourself.
 
 Review large work on its plan, where changing course is cheap. Review small
 work on its diff, where a reader can read the whole of it.
