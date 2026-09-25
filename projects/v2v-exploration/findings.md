@@ -43,7 +43,14 @@ misheard word, is unsafe at the wheel and worse than no harness.
 
 ## Summary
 
-No findings yet. The repo `Bogdanovist/voice-to-vibe` is empty (GitHub
+Q2 has a provisional answer: a native Android app, not mobile web. A
+browser page cannot keep the microphone alive with the screen off, and
+Chrome's continuous speech recognition stops after a few seconds of
+silence. An Expo app with a microphone foreground service is the lightest
+native path. A test on my phone confirms or overturns this. Q1 research
+is still running.
+
+The repo `Bogdanovist/voice-to-vibe` is empty (GitHub
 reports `isEmpty: true`, created 2026-09-25) [OBSERVED].
 
 ## Questions to settle
@@ -80,7 +87,70 @@ plan can fix it. None is decided.
 
 ## Findings
 
-None yet.
+Tags: [OBSERVED] means I read or ran it this session. [REPORTED] means a
+research agent cited it on 2026-09-25 and I have not re-checked the source.
+
+### Q2 — mobile web against native (researched 2026-09-25)
+
+- **A web page cannot hold a screen wake lock in the background.** The
+  browser releases the lock when the document is not active or not
+  visible (MDN, Screen Wake Lock API) [OBSERVED]. So the page cannot keep
+  itself awake with the screen locked.
+- **Chrome throttles and freezes hidden tabs.** Timers run at most once a
+  minute after five minutes hidden, and Energy Saver freezes busy
+  background tabs from Chrome 133 (developer.chrome.com blog posts on
+  timer throttling and freezing) [REPORTED].
+- **Continuous speech recognition is broken on Chrome for Android.**
+  `continuous: true` still stops after about 3–4 s of silence (Chromium
+  issue 40324711). Chrome's Web Speech API also sends audio to Google's
+  servers, so it needs signal [REPORTED].
+- **`speechSynthesis` on Android has no true pause.** `pause()` acts as
+  `cancel()`, and long utterances stall (Chromium issue 374263394)
+  [REPORTED].
+- **Screen-off microphone capture dies in Chrome for Android.** People
+  report the WebRTC microphone track stops soon after the screen locks.
+  No Chromium bug pins the cause [REPORTED].
+
+**A native app must start its microphone service while it is on screen.**
+From Android 14 the microphone is a while-in-use permission. A
+microphone-type foreground service started from the background throws a
+`SecurityException`. The app must start it while an activity is visible,
+or from a notification or widget tap (developer.android.com, restrictions
+on background starts) [OBSERVED]. C2 fits this rule: the setup step on the
+screen starts the service, and it runs until voice mode ends. A
+notification tap can restart it.
+
+Native audio pieces the research names, all [REPORTED]:
+
+- **Bluetooth microphone:** `AudioManager.setCommunicationDevice()` routes
+  audio over Bluetooth HFP/SCO, which carries the headset microphone. HFP
+  sounds worse than A2DP, but A2DP has no microphone.
+- **Barge-in:** capture from `AudioSource.VOICE_COMMUNICATION` to get the
+  platform echo canceller, so the harness does not hear its own voice.
+- **Expo can reach this without ejecting.** A config plugin such as
+  `react-native-audio-api` declares the microphone foreground service.
+  This needs a development build, not Expo Go.
+
+### Q3–Q4 — speech and turn-taking (researched 2026-09-25, all [REPORTED])
+
+- **On-device recognition:** Android `SpeechRecognizer` has an on-device
+  mode (API 31+), but availability varies by phone maker. sherpa-onnx ships
+  Android packages for offline recognition. whisper.cpp and Vosk need more
+  integration work.
+- **Cloud recognition:** streaming services add turn detection and better
+  accuracy. Rough prices cited: Deepgram streaming about $0.008/min, Google
+  Cloud STT about $0.016/min, OpenAI Realtime about $0.02/min in and
+  $0.08/min out. These came from third-party pricing posts. Check them
+  before any cost decision.
+- **End of turn:** Silero VAD runs on Android through ONNX Runtime. A
+  common setting treats about 1 s of silence as the end of a turn.
+
+### Next check for Q2
+
+Run a probe on my phone: a minimal page, then a minimal Expo development
+build, each capturing the Bluetooth microphone for 30 minutes with the
+screen off. The page should fail and the app should hold. If the page
+holds, reopen the platform question.
 
 ## Out of scope
 
