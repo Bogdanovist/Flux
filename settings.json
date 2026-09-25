@@ -118,6 +118,7 @@
   "theme": "dark",
   "editorMode": "normal",
   "showTurnDuration": true,
+  "autoMemoryEnabled": false,
   "sandbox": {
     "enabled": true,
     "allowUnsandboxedCommands": false,
@@ -128,7 +129,8 @@
       "allowWrite": ["~/src/personal"]
     },
     "network": {
-      "allowAllUnixSockets": true
+      "allowAllUnixSockets": true,
+      "allowedDomains": ["github.com", "*.github.com"]
     }
   }
 }
