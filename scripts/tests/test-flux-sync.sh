@@ -427,7 +427,7 @@ verify_agent_repair_ignores_keyless_agent() {
 }
 
 # A settings change pulled from the other machine reaches the user settings
-# file in the same session start, and the note says it applies next session.
+# file in the same session start, and a successful merge says nothing.
 scenario_pulled_settings_are_merged() {
   mkdir -p "$TEST_TMP/claude"
   printf '{"theme":"light"}\n' >"$TEST_TMP/claude/settings.json"
@@ -442,7 +442,8 @@ scenario_pulled_settings_are_merged() {
 }
 verify_pulled_settings_are_merged() {
   printf '%s' "$LAST_OUTPUT" | grep -qF 'MERGED=["light","1"]' || return 1
-  printf '%s' "$LAST_OUTPUT" | grep -q "apply from the next session" || return 1
+  printf '%s' "$LAST_OUTPUT" | grep -q "settings" && return 1
+  return 0
 }
 
 # ---------------------------------------------------------------

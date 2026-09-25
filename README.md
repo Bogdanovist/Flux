@@ -51,8 +51,8 @@ A `settings.local.json` beside it applies only to sessions started in `~`.
 So Flux merges into the user file: first the tracked `settings.json`, then
 this machine's `settings.local.json`. `scripts/merge-settings.sh` holds the
 rules. `setup.sh` runs the merge, and the SessionStart sync hook runs it
-again after each pull, so a change to either source applies from the next
-session.
+again after each pull. Claude Code reloads the user file when it changes, so
+the running session picks up most changes, hooks and permissions included.
 
 **On a machine that already carries another config repo**, give Flux its own
 config dir instead, because two config repos cannot both own `~/.claude`:

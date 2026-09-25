@@ -27,11 +27,12 @@
 # with the checkout's other local commits.
 #
 # After the sync it merges Flux's settings into the user settings file
-# through scripts/merge-settings.sh, so a change to the tracked settings.json
-# or to this machine's settings.local.json applies from the next session.
+# through scripts/merge-settings.sh. Claude Code watches that file and
+# reloads it on change, so the running session picks up most of the merge,
+# hooks and permissions included.
 #
 # It is a nudge, not a gate: it never blocks session start, always exits 0,
-# and says nothing when the checkout is current.
+# and says nothing when the checkout is current or the merge succeeds.
 #
 # Environment (overridable for testing):
 #   FLUX_DIR           root of the Flux context repo (default: the checkout holding this hook)
@@ -95,15 +96,13 @@ weekly_rollup() {
 }
 
 # Merge after the sync, so the settings come from the checkout as synced.
-# The session has already loaded its settings, so a merge that changes the
-# file applies from the next session, and the note says so.
+# Only a failure is worth a word: a successful merge needs nothing from the
+# user or the agent.
 merge_settings() {
   local user_file="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/settings.json"
   local out
   if ! out=$(FLUX_DIR="$FLUX" bash "$REPO_ROOT/scripts/merge-settings.sh" "$user_file" 2>&1); then
     printf '[flux-sync] Could not merge Flux settings into %s: %s. Sessions run on the settings the file already holds. Mention this once.' "$user_file" "$out"
-  elif [ "$out" = merged ]; then
-    printf '[flux-sync] Merged changed Flux settings into %s; they apply from the next session. Mention this once, briefly.' "$user_file"
   fi
 }
 

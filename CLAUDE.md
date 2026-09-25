@@ -15,6 +15,7 @@ Claude-specific loading notes:
   the tracked file, never the installed link.
 - The config dir's `settings.json` belongs to the person.
   `scripts/merge-settings.sh` merges the tracked `settings.json` and the
-  machine's `settings.local.json` into it at every session start, so a
-  change to either applies from the next session.
+  machine's `settings.local.json` into it at every session start. Claude
+  Code reloads the file on change, so hooks and permissions apply to the
+  running session.
 - Where a recurrence must invoke Claude Code directly, use `claude -p`.
