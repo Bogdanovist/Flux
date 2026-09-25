@@ -117,5 +117,17 @@
   "tui": "fullscreen",
   "theme": "dark",
   "editorMode": "normal",
-  "showTurnDuration": true
+  "showTurnDuration": true,
+  "sandbox": {
+    "enabled": true,
+    "allowUnsandboxedCommands": false,
+    "filesystem": {
+      "denyRead": ["~/src"],
+      "allowRead": ["~/src/personal"],
+      "allowWrite": ["~/src/personal"]
+    },
+    "network": {
+      "allowAllUnixSockets": true
+    }
+  }
 }

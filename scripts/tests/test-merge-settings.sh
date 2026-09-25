@@ -23,7 +23,7 @@ check() { # check <name> <expected> <actual>
   fi
 }
 
-T="$(mktemp -d)"
+T="$(mktemp -d "${TMPDIR:-/tmp}/flux-test.XXXXXX")" || exit 1
 trap 'rm -rf "$T"' EXIT
 FLUX="$T/flux"; USER_FILE="$T/claude/settings.json"
 mkdir -p "$FLUX" "$T/claude"
@@ -69,6 +69,19 @@ rm "$T/claude/flux-merged.json"
 merge >/dev/null
 check "merge with no record adds no hook"    "1" "$(q '[.hooks.Stop[].hooks[] | select(.command != "mine.sh")] | length')"
 check "merge with no record keeps user hook" "1" "$(q '[.hooks.Stop[].hooks[] | select(.command == "mine.sh")] | length')"
+
+jq '.sandbox = {"enabled":true,"filesystem":{"allowRead":["~/a"]}}' "$FLUX/settings.json" >"$T/x" && mv "$T/x" "$FLUX/settings.json"
+jq '.sandbox = {"enabled":false,"filesystem":{"allowRead":["~/b"]}}' "$FLUX/settings.local.json" >"$T/x" && mv "$T/x" "$FLUX/settings.local.json"
+jq '.sandbox = {"enabled":true,"mine":1}' "$USER_FILE" >"$T/x" && mv "$T/x" "$USER_FILE"
+merge >/dev/null
+check "sources replace the user sandbox"  '{"enabled":false,"filesystem":{"allowRead":["~/a","~/b"]}}' "$(q .sandbox)"
+jq '.sandbox.enabled = true' "$FLUX/settings.local.json" >"$T/x" && mv "$T/x" "$FLUX/settings.local.json"
+merge >/dev/null
+check "a sandbox change in a source lands" 'true' "$(q .sandbox.enabled)"
+jq 'del(.sandbox)' "$FLUX/settings.json" >"$T/x" && mv "$T/x" "$FLUX/settings.json"
+jq 'del(.sandbox)' "$FLUX/settings.local.json" >"$T/x" && mv "$T/x" "$FLUX/settings.local.json"
+merge >/dev/null
+check "sandbox dropped from sources leaves" 'null' "$(q .sandbox)"
 
 rm "$USER_FILE"; ln -s "$FLUX/settings.json" "$USER_FILE"
 merge >/dev/null 2>&1; check "a linked user file is refused" "1" "$?"

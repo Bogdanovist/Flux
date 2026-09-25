@@ -10,6 +10,9 @@
 #   merge removes what the previous merge added, then adds the sources'
 #   current set, so an entry dropped from a source leaves the user file too.
 #   flux-merged.json, beside the user file, records what the last merge added.
+# - The sandbox key belongs to the sources whole, because it is a security
+#   boundary that must follow the tracked file both ways. The sources merge
+#   in order: objects merge by key, lists join, and a later scalar wins.
 # - Every other key, such as model, theme or permissions.defaultMode, is set
 #   only where the file has none, because the app writes preferences into
 #   the same file.
@@ -52,7 +55,8 @@ else:
     last = {"hooks": [h["command"] for f in frags for gs in f.get("hooks", {}).values()
                       for g in gs for h in g.get("hooks", [])],
             "env": [k for f in frags for k in f.get("env", {})],
-            "permissions": {}}
+            "permissions": {},
+            "sandbox": any("sandbox" in f for f in frags)}
     for f in frags:
         for key, value in f.get("permissions", {}).items():
             if isinstance(value, list):
@@ -72,9 +76,26 @@ perms = user.setdefault("permissions", {})
 for key, entries in last.get("permissions", {}).items():
     if isinstance(perms.get(key), list):
         perms[key] = [e for e in perms[key] if e not in entries]
+if last.get("sandbox"):
+    user.pop("sandbox", None)
+
+def deep_merge(base, extra):
+    for key, value in extra.items():
+        if isinstance(value, dict) and isinstance(base.get(key), dict):
+            deep_merge(base[key], value)
+        elif isinstance(value, list) and isinstance(base.get(key), list):
+            base[key] += [v for v in value if v not in base[key]]
+        else:
+            base[key] = json.loads(json.dumps(value))
+    return base
 
 # Add the sources' current set, and record it.
-record = {"hooks": [], "env": [], "permissions": {}}
+record = {"hooks": [], "env": [], "permissions": {},
+          "sandbox": any("sandbox" in f for f in frags)}
+if record["sandbox"]:
+    user["sandbox"] = {}
+    for frag in frags:
+        deep_merge(user["sandbox"], frag.get("sandbox", {}))
 for frag in frags:
     for event, groups in frag.get("hooks", {}).items():
         hooks.setdefault(event, []).extend(groups)
@@ -90,7 +111,7 @@ for frag in frags:
         else:
             perms.setdefault(key, value)
     for key, value in frag.items():
-        if key not in ("hooks", "env", "permissions", "$schema"):
+        if key not in ("hooks", "env", "permissions", "sandbox", "$schema"):
             user.setdefault(key, value)
 user["hooks"] = {k: v for k, v in hooks.items() if v}
 
