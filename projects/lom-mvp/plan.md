@@ -104,14 +104,13 @@ Move `CLAUDE.md` to `AGENTS.md` and leave `CLAUDE.md` as a one-line
    title text, and the phone shows the new text without a reload. PR carries
    the rule.
 
-## Decisions Matt must make before slice 1
+## Decisions (Matt, 2026-09-25)
 
-1. Stack: Vite + React + TypeScript (recommended), or Expo.
-2. Phone access: Tailscale (recommended), LAN only, or a public tunnel.
-3. Review flow: a PR per change, with the phone showing the branch
-   (recommended), or straight to `main` for this prototype repo.
-4. Sandbox: set `sandbox.network.allowLocalBinding: true`. Without it, no dev
-   server started by Claude can listen, and the live loop cannot work.
+1. Stack: Vite + React + TypeScript.
+2. Phone access: Tailscale.
+3. Review flow: a PR per change, with the phone showing the branch.
+4. Sandbox: Matt sets `sandbox.network.allowLocalBinding: true`. Without it,
+   no dev server started by Claude can listen, and the live loop cannot work.
 
 ## Out of scope
 
