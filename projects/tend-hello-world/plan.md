@@ -30,56 +30,32 @@ seeing the change on the phone.
   `Xcode.app`. A local iOS build needs Xcode. An EAS cloud build does not.
   The `eas` CLI is not installed.
 
+## Decisions (Matt, 2026-09-25)
+
+- **D1 — Mobile web only.** The phone and the Mac share the home network.
+  The app's fundamentals are still open, so native nuance waits. The
+  development build is out of scope.
+- **D2 — Local Supabase over the LAN.** The phone reaches the Mac's
+  Supabase at the Mac's LAN address. No hosted project.
+
 ## Approach
 
-Two paths, one slice each. The web path comes first because it is cheap
-and it proves the backend reachability that the native path also needs.
+One PR on `tend-to-do`. Serve the app with the Expo web dev server on the
+Mac's LAN address, and point `EXPO_PUBLIC_SUPABASE_URL` at the Mac's LAN
+address. Open the page in the phone's browser. Fast Refresh pushes each
+save to the phone in seconds. Reuse `scripts/setup-user-test.sh`, which
+already starts Supabase, detects the LAN IP and writes `.env.local`.
 
-1. **Mobile web over the LAN.** Serve the app with `expo start --web` bound
-   to the Mac's LAN address. Point `EXPO_PUBLIC_SUPABASE_URL` at a backend
-   the phone can reach. Open the page in the phone's browser. Fast Refresh
-   pushes each save to the phone in seconds. Web cannot show native-only
-   behaviour: the widget, notifications, native gestures and fonts may
-   differ. Done when a save on the Mac changes the screen on the phone, and
-   sign-in and one synced task work.
-2. **Development build.** Add `expo-dev-client` and an `eas.json` with a
-   `development` profile. Build once, install on the phone, and then load
-   JavaScript from the Mac's Metro server, so only a native change needs a
-   rebuild. Done when the dev build is on the phone, a JavaScript save
-   reaches it through Fast Refresh, and the widget renders.
+Web cannot show native-only behaviour: the widget, notifications, native
+gestures and fonts may differ.
 
-Each slice lands as a PR on `tend-to-do` with a short runbook in its
-`AGENTS.md` §Commands: the one command to start, and what to open on the
-phone.
-
-## Open questions (Matt)
-
-- **Q1 — Which phone?** iPhone or Android. The widget is iOS only. An
-  iPhone dev build needs an Apple Developer account ($99 a year) to install
-  on a device. It also needs the device registered with EAS, or a
-  7-day free provisioning profile from local Xcode.
-- **Q2 — Which backend does the phone talk to?** This is an architecture
-  choice, and it sets how data flows in development.
-  - *Local Supabase over the LAN.* The phone uses the Mac's LAN IP. It costs
-    nothing and keeps test data off the internet. It works only on the home
-    network, while the Mac runs `supabase start` (Docker). The LAN IP can
-    change, so the URL in `.env` goes stale. Auth redirect URLs in
-    `supabase/config.toml` also need the LAN address.
-  - *A hosted Supabase dev project.* It works from any network and needs no
-    Docker running. It costs a new project and its keys. Migrations then
-    need a push step to a remote database.
-- **Q3 — Where does the native build run?** EAS cloud build (free tier: a
-  queue, about 10–20 minutes a build, no Xcode needed). Or install Xcode
-  (about 15 GB) and build locally with `expo run:ios`. The dev build only
-  rebuilds on a native change, so the build time matters less than it
-  seems.
-- **Q4 — Is the phone on the same network as the Mac?** The LAN path needs
-  it. If not, `expo start --tunnel` works through a tunnel, at the cost of
-  slower reloads.
+Done when a save on the Mac changes the screen on the phone, and sign-up,
+sign-in and one synced task work from the phone. The runbook goes in the
+repo's `AGENTS.md` §Commands.
 
 ## Out of scope
 
+- The native development build (`expo-dev-client`, EAS or Xcode).
 - Production builds, store submission, and a deployment pipeline.
-- A hosted production backend. A hosted *dev* project (Q2) is in scope
-  only if Matt picks it.
+- A hosted Supabase project.
 - Feature work and UI changes.
