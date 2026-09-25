@@ -94,7 +94,7 @@ done
 # --- Fetch every repo at once. ---
 # Sequential fetches would charge the session boundary the sum of the
 # timeouts; in parallel it is bounded by the slowest single repo.
-STATUS_DIR="$(mktemp -d 2>/dev/null)" || exit 0
+STATUS_DIR="$(mktemp -d "${TMPDIR:-/tmp}/checkouts-sync.XXXXXX" 2>/dev/null)" || exit 0
 trap 'rm -rf "$STATUS_DIR"' EXIT
 
 for dir in "${REPOS[@]}"; do

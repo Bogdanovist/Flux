@@ -95,7 +95,7 @@ build_fixture() {
 
 run_test() {
   local name="$1"
-  TEST_TMP="$(mktemp -d)"
+  TEST_TMP="$(mktemp -d "${TMPDIR:-/tmp}/flux-test.XXXXXX")" || exit 1
   "scenario_$name"
   local rc=$?
   if [ "$rc" -eq 0 ]; then

@@ -88,7 +88,7 @@ run_hook() {
 }
 
 setup() {
-  TEST_TMP="$(mktemp -d)"
+  TEST_TMP="$(mktemp -d "${TMPDIR:-/tmp}/flux-test.XXXXXX")" || exit 1
   export GIT_CONFIG_NOSYSTEM=1
   export GIT_CONFIG_GLOBAL="$TEST_TMP/gitconfig"
   cat >"$GIT_CONFIG_GLOBAL" <<'EOF'

@@ -41,7 +41,7 @@ bad()  { FAIL=$((FAIL+1)); FAILED_NAMES="${FAILED_NAMES:+$FAILED_NAMES }$1"
          [ -n "${2:-}" ] && printf '%s\n' "$2" | sed 's/^/       /'; }
 
 setup() {
-  TEST_TMP="$(mktemp -d)"
+  TEST_TMP="$(mktemp -d "${TMPDIR:-/tmp}/flux-test.XXXXXX")" || exit 1
   FLUX_FIX="$TEST_TMP/flux"
   WORKTREE_FIX="$TEST_TMP/flux-worktrees/feature"
   ELSEWHERE="$TEST_TMP/elsewhere"

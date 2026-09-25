@@ -49,7 +49,7 @@ color_fail() { printf '\033[31m%s\033[0m' "$1"; }
 run_test() {
   local name="$1"
   local tmpdir
-  tmpdir="$(mktemp -d)"
+  tmpdir="$(mktemp -d "${TMPDIR:-/tmp}/flux-test.XXXXXX")" || exit 1
   export TEST_TMP="$tmpdir"
 
   # Hermetic git: identity comes from the per-clone config below, nothing

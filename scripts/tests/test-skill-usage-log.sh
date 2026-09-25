@@ -40,7 +40,7 @@ post_tool() {
 run_test() {
   local name="$1"
   local tmpdir
-  tmpdir="$(mktemp -d)"
+  tmpdir="$(mktemp -d "${TMPDIR:-/tmp}/flux-test.XXXXXX")" || exit 1
   export TEST_TMP="$tmpdir"
   mkdir -p "$tmpdir/.claude"
   local out

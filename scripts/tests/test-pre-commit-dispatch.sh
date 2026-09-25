@@ -38,7 +38,7 @@ check() { # label want got
   fi
 }
 
-TMP=$(mktemp -d)
+TMP="$(mktemp -d "${TMPDIR:-/tmp}/flux-test.XXXXXX")" || exit 1
 trap 'rm -rf "$TMP"' EXIT
 
 printf 'pre-commit-dispatch\n'
