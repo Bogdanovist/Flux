@@ -86,8 +86,12 @@ Changes land on a feature branch in a worktree, with a PR (charter §Review).
 The session that edits code starts the dev server from its own worktree on
 port 5173, so the phone shows the branch under work before it merges. One
 session serves at a time. A second session on the same port fails to start
-and says so. A repo rule, `.claude/rules/dev-server.md`, records the command
-and the port.
+and says so. The repo's `AGENTS.md` records the command, the port and the
+phone URL.
+
+The Claude Code sandbox blocks macOS file-system events (measured
+2026-09-25: `fs.watch` fails with `EMFILE` and reports no events), so Vite's
+watcher polls every 200 ms.
 
 ### Repo guidance
 
@@ -102,8 +106,8 @@ Move `CLAUDE.md` to `AGENTS.md` and leave `CLAUDE.md` as a one-line
    `tsc --noEmit`, and one Vitest test that renders the title. The repo
    guidance change above. One PR.
 2. **Title page on the phone.** Matt installs Tailscale and sets
-   `allowLocalBinding`. Add the laptop's tailnet hostname to
-   `server.allowedHosts`, and add the dev-server rule. Prove it: Claude edits the
+   `allowLocalBinding`. Add the laptop's tailnet hostname, `matt-human`, to
+   `server.allowedHosts`, turn on polling, and add the dev server guidance. Prove it: Claude edits the
    title text, and the phone shows the new text without a reload. PR carries
    the rule.
 
