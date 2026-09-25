@@ -114,10 +114,7 @@ Each slice is one PR in a worktree, shown on the phone before it merges.
 2. **Roles, fights and passes.** The role table, fights, knock-downs,
    throwing and catching. After this slice the match looks like harpastum.
 
-## Decisions for Matt
-
-Each of these sets how the prototype plays or how the code is built, so none
-of them is settled until Matt approves it.
+## Decisions (Matt, 2026-09-25)
 
 1. **Seeded, fixed-step sim separate from the screen.** Matches replay from
    a seed and are testable. Every random choice must go through the sim's
