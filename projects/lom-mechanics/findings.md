@@ -34,16 +34,14 @@ what worked, what did not, and the verdict (keep, reshape, drop). A sketch that
 earns a place becomes a concept file in `Lines-on-Maps/docs/concepts/`.
 Nothing is promoted into `foundations.md` without Matt's explicit say.
 
-## Open questions before the first sketch
+## Decisions
 
-- **How sketches live in the repo.** Either one branch and PR per sketch,
-  with the phone showing whichever branch the dev server runs; or all sketches
-  on `main` behind a picker on the title screen, so Matt can switch between
-  them and compare. The first keeps `main` clean but makes side-by-side
-  comparison need a branch switch. The second makes comparison one tap, and
-  `main` fills with throwaway code.
-- **Which mechanics to try first.** Matt names them, or picks from a short list
-  of candidates Claude proposes.
+- **Sketches live on `main` behind a picker on the title screen** (Matt,
+  2026-09-25). Switching between sketches takes one tap on the phone, which is
+  what comparing them needs. The cost is accepted: `main` fills with throwaway
+  code.
+- **Each sketch starts as a concept doc.** Matt and Claude agree the concept in
+  `Lines-on-Maps/docs/concepts/` before any code for it is written.
 
 ## Out of scope
 
@@ -54,4 +52,12 @@ Nothing is promoted into `foundations.md` without Matt's explicit say.
 
 ## Sketches
 
-None yet.
+### Concept 02: the emerging world
+
+A map game of about a dozen fictional countries that start blank and take form
+through roguelite draws: pick-one-of-three appointments to each government, and
+developments such as oil discoveries or separatist movements. Crises and
+alliances grow out of how the countries form.
+
+Concept doc drafted in https://github.com/Bogdanovist/lines-on-maps/pull/3,
+awaiting Matt's review. Not yet built.
