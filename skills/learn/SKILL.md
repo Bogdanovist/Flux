@@ -1,6 +1,6 @@
 ---
 name: learn
-description: "Capture a single durable lesson from the current session into the learnings staging pipeline. Use when a reusable insight surfaces that doesn't naturally fit the automated emission sites — file it here in plain prose and the curator routes it on the next curation pass."
+description: "Capture a single durable lesson from the current session into the learnings staging pipeline. Use in the same turn when a hook, sandbox rule, permission, skill or charter rule blocked, misled or slowed you, when you had to invent a workaround, or when any other reusable insight surfaces. File it in plain prose; the curator routes it on the next curation pass."
 user-invocable: true
 argument-hint: "<the lesson, in plain prose>   (leave blank for a one-line reminder)"
 ---

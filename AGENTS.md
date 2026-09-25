@@ -345,11 +345,14 @@ radius: the note protects the one agent that reads it while everything else
 downstream of X stays silently wrong. Durable context may point at the open
 escalation; it may not carry the workaround in place of one.
 
-## Suggesting improvements — surface, don't self-apply
+## Suggesting improvements — file, don't self-apply
 
-Spot a way the config, rules, docs or this charter could be better? Tell me,
-explicitly, and lean harder toward flagging it than toward staying quiet. Do
-not edit `AGENTS.md`, `CLAUDE.md`, checked-in rule files or the learnings
+When a hook, sandbox rule, permission, skill or charter rule blocks, misleads
+or slows you, file it in the same turn. Use `/learn` for a lesson and
+`followup` for a bug. Then name what you filed in one line at the end of your
+reply. A problem you only mention in chat is lost. Filing costs little, so
+file whenever you doubt.
+
+Do not edit `AGENTS.md`, `CLAUDE.md`, checked-in rule files or the learnings
 files on your own initiative. Small changes we make together on the spot.
-Bigger ones go through `/learn`, and `/curate` promotes a staged lesson into
-guidance.
+`/curate` promotes a staged lesson into guidance.
