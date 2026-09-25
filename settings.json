@@ -121,7 +121,7 @@
   "sandbox": {
     "enabled": true,
     "allowUnsandboxedCommands": false,
-    "excludedCommands": ["gh"],
+    "enableWeakerNetworkIsolation": true,
     "filesystem": {
       "denyRead": ["~/src"],
       "allowRead": ["~/src/personal"],
