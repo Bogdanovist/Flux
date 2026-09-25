@@ -5,10 +5,9 @@ repos: Lines-on-Maps
 
 ## Why
 
-Lines On Maps has three settled commitments (roguelite, turn-based, the player
-is an actor in a crisis-bargaining dispute) and nothing else. Who the player
-is, what a turn is, and how a run is won are all open
-(`Lines-on-Maps/docs/foundations.md`). One concept sketch exists on paper
+Lines On Maps started with three commitments (roguelite, turn-based, the
+player is an actor in a crisis-bargaining dispute) and nothing else. Who the
+player is, what a turn is, and how a run is won were all open. One concept sketch exists on paper
 (`docs/concepts/concept-01-cabinet-desk.md`). No mechanic has been played.
 
 Paper concepts cannot answer the question that matters: is this fun to play,
@@ -25,14 +24,9 @@ dropped. Each sketch tests one idea about what the player does each turn. It
 carries only enough game around that idea to feel it: placeholder visuals,
 hard-coded scenarios, no persistence, no roguelite meta-layer.
 
-Each sketch is judged against the design values and anti-patterns in
-`foundations.md`, above all: no visible bargaining range, probability dials or
-numeric resolve.
-
 Findings go in this doc, one section per sketch: the idea, what Matt played,
 what worked, what did not, and the verdict (keep, reshape, drop). A sketch that
 earns a place becomes a concept file in `Lines-on-Maps/docs/concepts/`.
-Nothing is promoted into `foundations.md` without Matt's explicit say.
 
 ## Decisions
 
@@ -40,6 +34,9 @@ Nothing is promoted into `foundations.md` without Matt's explicit say.
   2026-09-25). Switching between sketches takes one tap on the phone, which is
   what comparing them needs. The cost is accepted: `main` fills with throwaway
   code.
+- **No foundations doc binds a sketch** (Matt, 2026-09-25). The early
+  foundations and theory-to-mechanics mapping are legacy background in
+  `Lines-on-Maps`. Each concept file records its own decisions.
 - **Each sketch starts as a concept doc.** Matt and Claude agree the concept in
   `Lines-on-Maps/docs/concepts/` before any code for it is written.
 
@@ -60,4 +57,4 @@ developments such as oil discoveries or separatist movements. Crises and
 alliances grow out of how the countries form.
 
 Concept doc drafted in https://github.com/Bogdanovist/lines-on-maps/pull/3,
-awaiting Matt's review. Not yet built.
+being settled one open question at a time with Matt. Not yet built.
