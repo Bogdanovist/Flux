@@ -136,3 +136,21 @@ The two stale worktrees at `~/src/tend-to-do/` were pruned with
   `/learn`.
 - A `features/tend/` directory in Flux. Tend is one repo, so its context
   lives in the repo. Revisit only if a fact spans repos.
+
+## Progress
+
+- 2026-09-25: setup PR raised, https://github.com/Bogdanovist/tend-to-do/pull/3.
+- 2026-09-25: CI on `main` fails every nightly run (checked runs
+  2026-09-20 to 2026-09-24):
+  - The unit job runs `npx expo doctor`, which Expo no longer supports
+    ("please use npx expo-doctor"). The job stops there, so no unit test
+    has run in CI. PR #3 fails at the same step.
+  - Run locally, `npx expo-doctor` reports duplicate `@expo/ui`:
+    `expo-widgets@^55` (an SDK 55 package, `@expo/ui ~55.0.11`) beside
+    the app's `@expo/ui ~0.2.0-beta.9` for SDK 54. No stable
+    `expo-widgets` release exists for SDK 54; 55.0.0 shipped 2026-02-25.
+  - The backend and nightly jobs hit Docker Hub rate limits on
+    `supabase start`, then fail on missing `SUPABASE_*` env: the CI
+    config reads them from repo secrets.
+  - The nightly journeys job fails with
+    `LokiMemoryAdapter is not a constructor`.
