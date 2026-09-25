@@ -84,7 +84,7 @@ blocks the other.
 ### Branches and guidance
 
 Each change lands on a feature branch in a worktree, with a PR against
-`master`. The session that edits code serves the dev server from its own
+`main`. The session that edits code serves the dev server from its own
 worktree, so the phone shows the branch under review. The repo gets an
 `AGENTS.md` with the run command, the port, the phone URL and the checks,
 and a one-line `CLAUDE.md` that imports it.
@@ -101,13 +101,13 @@ and a one-line `CLAUDE.md` that imports it.
 One slice suffices here: the Lines On Maps work already settled the
 Tailscale, sandbox and polling unknowns that justified two slices there.
 
-## Questions for Matt
+## Decisions (Matt, 2026-09-25)
 
-1. Stack: Vite + React + TypeScript, the same as Lines On Maps?
-2. The Python code: move to `legacy/` untouched, as above?
-3. Port 5174, so both games can serve at once?
-4. Default branch: keep `master`, or rename to `main` in this PR? Renaming
-   touches only GitHub settings and the local checkout.
+1. Stack: Vite + React + TypeScript.
+2. The Python code moves to `legacy/` untouched.
+3. The dev server uses port 5174.
+4. The default branch is renamed from `master` to `main` before the slice
+   starts, so the PR targets `main`.
 
 ## Out of scope
 
