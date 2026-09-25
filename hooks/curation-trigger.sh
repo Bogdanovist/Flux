@@ -28,7 +28,9 @@
 
 set -uo pipefail
 
-LEARNINGS_DIR="${LEARNINGS_DIR:-${FLUX_PROJECT_DIR:-${CLAUDE_PROJECT_DIR:-$PWD}}/learnings}"
+# Physical resolve: this hook is reached through the ~/.claude/hooks symlink.
+REPO_ROOT="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
+LEARNINGS_DIR="${LEARNINGS_DIR:-${FLUX_DIR:-$REPO_ROOT}/learnings}"
 STAGING_FILE="$LEARNINGS_DIR/staging.md"
 SENTINEL="$LEARNINGS_DIR/.curation-needed"
 

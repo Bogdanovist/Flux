@@ -23,9 +23,8 @@
 #
 # Environment:
 #   LEARNINGS_DIR         — root of the learnings tree (default:
-#                           $FLUX_PROJECT_DIR/learnings,
-#                           $CLAUDE_PROJECT_DIR/learnings, or
-#                           $PWD/learnings if neither is set).
+#                           $FLUX_DIR/learnings, or the learnings/ of
+#                           the checkout holding this hook).
 #   LEARNINGS_PENDING_DIR — pending tree to drain (default:
 #                           $LEARNINGS_DIR/pending). Tests override
 #                           this to exercise the flock contract with
@@ -34,12 +33,6 @@
 
 set -uo pipefail
 
-LEARNINGS_DIR="${LEARNINGS_DIR:-${FLUX_PROJECT_DIR:-${CLAUDE_PROJECT_DIR:-$PWD}}/learnings}"
-PENDING_DIR="${LEARNINGS_PENDING_DIR:-$LEARNINGS_DIR/pending}"
-REJECTED_DIR="$PENDING_DIR/.rejected"
-STAGING_FILE="$LEARNINGS_DIR/staging.md"
-LOCK_FILE="$LEARNINGS_DIR/staging.lock"
-
 # Resolve the repo physically. This hook is invoked through ~/.claude/hooks, which
 # is a symlink into this repo, so a logical `..` walks lexically out of the link and
 # lands in ~/.claude — where the schema library only happens to be reachable on a
@@ -47,6 +40,14 @@ LOCK_FILE="$LEARNINGS_DIR/staging.lock"
 # silently validates nothing on every machine set up by setup.sh, and every emitted
 # lesson sits in pending/ forever.
 REPO_ROOT="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
+
+# /learn writes into Flux's pending pile whatever repo the session runs in, so
+# the drain reads Flux's tree, never the session's project dir.
+LEARNINGS_DIR="${LEARNINGS_DIR:-${FLUX_DIR:-$REPO_ROOT}/learnings}"
+PENDING_DIR="${LEARNINGS_PENDING_DIR:-$LEARNINGS_DIR/pending}"
+REJECTED_DIR="$PENDING_DIR/.rejected"
+STAGING_FILE="$LEARNINGS_DIR/staging.md"
+LOCK_FILE="$LEARNINGS_DIR/staging.lock"
 SCHEMA_LIB="$REPO_ROOT/scripts/lib/staging-schema.sh"
 TRIGGER_HOOK="$REPO_ROOT/hooks/curation-trigger.sh"
 
