@@ -75,8 +75,8 @@ checkout on its own, and changes take effect on the next session.
 **Flux ships straight to `main`.** Edit, commit by explicit path, push. A
 branch here needs a stated reason. Project repos work the other way: a feature
 branch, a PR raised when the slice is built, `reviewing-diff` posting its
-findings as PR comments, and my merge as the approval. An agent never merges
-and never approves.
+findings as PR comments, and a merge only on my explicit approval for that PR.
+An agent never approves a PR on GitHub.
 
 **The Stop hook is a backstop, and it treats the two repo shapes
 differently.** In Flux it pushes what the session committed and names what is

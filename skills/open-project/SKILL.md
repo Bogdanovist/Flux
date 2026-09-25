@@ -69,7 +69,8 @@ instead, in a cold context.
 
 The code is the other story. Every change to a project repo lands as a feature
 branch and a PR there, reviewed with `reviewing-diff` once it is raised, so the
-diff carries its findings when the user reads it. Their merge is the approval.
+diff carries its findings when the user reads it. It merges only on their
+explicit approval.
 
 If the work is small enough to skip the doc, skip all of this and let the code
 PR carry the review.

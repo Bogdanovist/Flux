@@ -50,7 +50,7 @@ For genuinely trivial work — a typo, a one-line rename — skip the skill.
      that judgement.
 
    Hand the user a green PR carrying its review thread. They read the thread
-   and merge, and that merge is the approval. Never merge it yourself.
+   and approve the merge. Merge only on their explicit approval for this PR.
 5. **Record.** Append the completion note (shipped date, PR) and
    `## What this tracer taught` to each executed spec — the fact the
    design lacked with its evidence, the records affected, the remaining
