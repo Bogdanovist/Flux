@@ -124,13 +124,23 @@
     "allowUnsandboxedCommands": false,
     "enableWeakerNetworkIsolation": true,
     "filesystem": {
-      "denyRead": ["~/src"],
-      "allowRead": ["~/src/personal"],
-      "allowWrite": ["~/src/personal"]
+      "denyRead": [
+        "~/src"
+      ],
+      "allowRead": [
+        "~/src/personal"
+      ],
+      "allowWrite": [
+        "~/src/personal"
+      ]
     },
     "network": {
       "allowAllUnixSockets": true,
-      "allowedDomains": ["github.com", "*.github.com"]
+      "allowedDomains": [
+        "github.com",
+        "*.github.com"
+      ],
+      "allowLocalBinding": true
     }
   }
 }
