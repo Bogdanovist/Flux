@@ -83,63 +83,51 @@ Problem 2 is independent of the process. Journey tests are good tests, and
 Flux keeps them. The 42 drafts hold real value: a reverse-engineered
 description of current behaviour, eight open questions, and eight bugs.
 
-## Approach (proposed — decisions below need Matt)
+## Decisions (Matt, 2026-09-25)
 
-Land the setup as one PR on `tend-to-do`, reviewed with `reviewing-diff`:
+**D1 — The tests are the behavioural contract.** A test's `describe()` and
+`it()` titles state the behaviour it guarantees, and `jest --verbose`
+prints the full list. Journey tests live in `src/journeys/__tests__/` and
+run under `npm test`. The story markdown, its frontmatter and the
+`auditing-stories` skill go. New invariants start as register entries in a
+Flux plan or spine, and the slice that builds them writes the test.
 
-1. **Agent context.** Replace `CLAUDE.md` with `AGENTS.md` (product
-   one-liner, stack, commands, test policy) and a thin `CLAUDE.md` that
-   imports it, as Flux does. Point at `docs/prd.md` for the why.
+**D2 — The drafts.** The live bug `clear-notes-persists-on-save` is fixed
+in the setup PR, with a test. The other seven BUG drafts and the eight OPEN
+questions go to Matt as a short list; each accepted one becomes a journey
+test or a PRD note, and the rest go through `followup`. The 34 baseline
+drafts are not backfilled: a journey test is written when a feature
+touches that behaviour. Git history keeps the drafts.
+
+**D3 — End-to-end coverage is a goal.** Every feature gets the most
+complete end-to-end test the current setup can run. Work does not stop
+when the setup cannot run a test. The missing test goes on a "Test gaps"
+list in the repo's `AGENTS.md`, with what it needs, and comes off when it
+lands.
+
+## Approach
+
+One PR on `tend-to-do`, branch `flux-setup`, reviewed with
+`reviewing-diff`:
+
+1. **Agent context.** `AGENTS.md` carries the product one-liner, stack,
+   commands, test policy and test gaps. `CLAUDE.md` imports it.
 2. **Remove the forked process.** Delete `.claude/skills/`,
-   `.claude/agents/`, `.claude/README.md`, and the `rpikit` line in
-   `.claude/settings.json`. Keep `.claude/rules/component-testing.md`,
-   which is repo-specific.
-3. **Delete `docs/plans/`.** Git history keeps the files.
-4. **Hygiene.** Untrack `.env` and add it to `.gitignore`. `.env.example`
-   holds placeholders only, so the swap is local: fix it in the local
-   `.env`. Prune the two stale worktrees.
-5. **Stories and test policy** — decision D1.
-6. **The eight BUG drafts and eight OPEN drafts** — decision D2.
+   `.claude/agents/`, `.claude/README.md`, `.claude/settings.json` (it
+   only disabled `rpikit`, which this machine does not install) and
+   `.claude/rules/story-testing.md`. Keep
+   `.claude/rules/component-testing.md`.
+3. **Delete `docs/plans/` and `docs/stories/`.**
+4. **Rename the real-backend suite** from `stories-integration` to
+   `journeys-integration`: directory, Jest config, npm script and CI job.
+   Drop the `test:stories` script and its CI step.
+5. **Hygiene.** Untrack `.env` and add it to `.gitignore`. The key swap
+   is in the local `.env` only (`.env.example` holds placeholders), so
+   Matt fixes it locally.
+6. **Fix the notes bug** in `app/task/[id].tsx`, with a test.
 
-## Decisions for Matt
-
-**D1 — Where does "what the app guarantees" live?** This sets the test
-policy that every later feature follows.
-
-- **(a) The journey test is the contract. Recommended.** Drop the story
-  markdown, its frontmatter and the audit skill. A journey test keeps the
-  readable shape: the `describe()` title states the behaviour, and a
-  comment per step reads as the steps. `jest --verbose` prints the full
-  list of guarantees, so a readable index comes from the tests and cannot
-  drift. New invariants start as register entries in a Flux plan or spine,
-  and the tracer that builds them writes the test. Cost: Matt reads
-  behaviour in test files or test output, not in prose files, and has no
-  editable place to declare a behaviour change outside a plan doc.
-- **(b) Keep stories as the contract.** Promote the approved drafts, write
-  a Tier-1 test for each, and keep `auditing-stories`. Cost: two sources
-  of truth per behaviour, a repo skill that duplicates the Flux review
-  loop, and 42 tests to write before feature work.
-- **(c) Keep a few stories.** Stories only for cross-screen journeys, with
-  no audit skill. Cost: the same two-source problem at a smaller size,
-  and a line between "story" and "test" to argue on every change.
-
-**D2 — The 42 drafts.** They must go somewhere before the directory is
-removed, if D1 is (a) or (c).
-
-- The bug `clear-notes-persists-on-save` is live. Fix it in the setup PR,
-  with a test.
-- The other seven BUG drafts and the eight OPEN questions go to Matt as a
-  short list. Each one he accepts becomes a journey test (fixing the code
-  where needed) or a note in the PRD. The rest go through `followup`.
-- The 34 baseline drafts describe current behaviour. Where an existing test
-  already covers one, it adds nothing. The rest are candidates for journey
-  tests. Recommendation: do not backfill them all now. Write a journey
-  test when a feature touches that behaviour.
-
-**D3 — The testing policy in `CLAUDE.md`.** It mandates full-stack E2E for
-every feature, a render test for every `.tsx` file, and Maestro flows in
-CI on Android and iOS. Keep it as is, or trim it to what CI runs today?
-The Maestro jobs are unverified (CI was not visible from here).
+The two stale worktrees at `~/src/tend-to-do/` were pruned with
+`git worktree prune` on 2026-09-25, outside the PR.
 
 ## Out of scope
 
