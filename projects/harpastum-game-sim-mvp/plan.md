@@ -138,3 +138,13 @@ Each slice is one PR in a worktree, shown on the phone before it merges.
 - Any management screen, season or league.
 - Sound, and real art assets.
 - Any port of the Python code in `legacy/`.
+
+## Progress
+
+- 2026-09-25: slice 1 merged as Bogdanovist/harpastum#2 (`44f7c26`). Matt
+  watched it in the browser and waived the diff review, because the code is
+  prototype code. Across seeds 1–10 a match has 11 to 18 scores and about 90
+  fumbles, which Matt judged acceptable for a proof of concept. The red end
+  zone renders olive, because its tint blends with the grass. Matt will
+  tune the match in a later session. Slice 2 (roles, fights and passes) has
+  not started.
