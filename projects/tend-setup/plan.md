@@ -168,3 +168,9 @@ The two stale worktrees at `~/src/tend-to-do/` were pruned with
   device-created record fails with Postgres `22P02`. The other sync tests
   send `crypto.randomUUID()` ids and miss it. The Android Maestro smoke
   job hit its 30-minute limit.
+- 2026-09-25: Matt chose client-side UUID ids, with no device data to
+  migrate. PR #5, https://github.com/Bogdanovist/tend-to-do/pull/5,
+  stacked on PR #4, registers `expo-crypto`'s `randomUUID` as
+  WatermelonDB's id generator. The client sync tests no longer overwrite
+  ids. Locally: Jest 192/192. The backend push tests run only in CI.
+  Merge order: #3, #4, #5.
