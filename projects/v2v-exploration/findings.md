@@ -38,14 +38,14 @@ misheard word, is unsafe at the wheel and worse than no harness.
   do with hands and eyes, approvals included. An extra, explicit spoken
   confirmation may guard risky steps. How that confirmation works is an
   open question (Q6).
-- **C5 — Personal use; adopt before building.** The harness is for me. If
-  an existing open-source project meets C1–C4, I use or fork it, and
-  `voice-to-vibe` stays empty or holds the fork.
+- **C5 — Personal use; built from scratch.** The harness is for me, and
+  I build it in `voice-to-vibe`. No existing project is adopted or forked
+  (see §Existing projects evaluated). Their designs are evidence for mine.
 
 ## Summary
 
-No existing project meets C1–C4 as it stands. `1nspectorCat/Claudio-Code`
-comes closest. Its Android audio side handles Bluetooth, the screen-off
+No existing project meets C1–C4 as it stands, and I build my own (C5).
+`1nspectorCat/Claudio-Code` comes closest. Its Android audio side handles Bluetooth, the screen-off
 case and interrupting playback. Its gaps are spoken approvals (Q6), output
 made for listening (Q5), and Russian hard-coded throughout. `mbailey/voicemode`
 does not fit: it only uses the microphone and speaker of the Mac that runs
