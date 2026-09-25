@@ -154,3 +154,17 @@ The two stale worktrees at `~/src/tend-to-do/` were pruned with
     config reads them from repo secrets.
   - The nightly journeys job fails with
     `LokiMemoryAdapter is not a constructor`.
+- 2026-09-25: PR #4, https://github.com/Bogdanovist/tend-to-do/pull/4,
+  upgrades to Expo SDK 55, stacked on PR #3. Locally: tsc clean,
+  expo-doctor 20/20, Jest 191/191, and the web export exits in about 15 s
+  with single-page output. CI now runs on pull requests into any branch.
+- 2026-09-25: CI run 36084066810 on PR #3 (`29c588e`): the key export
+  works and `npm run test:backend` passes 46 of 47. The failure is a
+  product bug. `public.tasks.id` is `UUID`
+  (`supabase/migrations/00001_create_schema.sql:42`). WatermelonDB's
+  default ids are 16-character strings (a client task got
+  `vG7jsM2aNuwf5SaY`). The sync function inserts pushed records with the
+  client id (`supabase/functions/sync/index.ts:232`), so pushing a
+  device-created record fails with Postgres `22P02`. The other sync tests
+  send `crypto.randomUUID()` ids and miss it. The Android Maestro smoke
+  job hit its 30-minute limit.
