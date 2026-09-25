@@ -5,7 +5,7 @@ argument-hint: "What will the next session be used for?"
 user-invocable: true
 ---
 
-Write a handoff document summarising the current conversation so a fresh agent can continue the work. Save to `$FLUX_DIR/projects/{project-name}/handoffs/{topic}-YYYY-MM-DD.md` — substitute the project the current session is working on. Make the topic slug unique within the day. If a file with that name already exists, pick a more specific slug. Do not append a counter.
+Write a handoff document summarising the current conversation so a fresh agent can continue the work. Save to `<repo>/context/projects/{project-name}/handoffs/{topic}-YYYY-MM-DD.md` in the repo's main checkout — substitute the project the current session is working on — and commit it to `main` by explicit path. Make the topic slug unique within the day. If a file with that name already exists, pick a more specific slug. Do not append a counter.
 
 Include a "suggested skills" section in the document, which suggests skills that the agent should invoke.
 

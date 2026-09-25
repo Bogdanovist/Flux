@@ -1,13 +1,14 @@
 ---
 name: resolving-sync-conflicts
-description: What to do when git in the shared Flux checkout is in a state you did not create — a rebase that conflicted, a stash holding another session's edits, an index.lock, a half-finished rebase, unpushed commits, files in the tree that are not yours. Use the moment any of those appears, before running a second git command. Applies to `$FLUX_DIR`, which every session on a machine shares.
+description: What to do when git in a shared checkout is in a state you did not create — a rebase that conflicted, a stash holding another session's edits, an index.lock, a half-finished rebase, unpushed commits, files in the tree that are not yours. Use the moment any of those appears, before running a second git command. Applies to `$FLUX_DIR` and to each repo's main checkout, which every session on a machine shares.
 user-invocable: true
 ---
 
 # Resolving sync conflicts
 
-Every session on a machine works in one `$FLUX_DIR` checkout, and your other
-machines push to `main` from theirs. So the tree you are looking at holds
+Every session on a machine works in one `$FLUX_DIR` checkout, and in one
+main checkout per repo for its `context/`. Your other machines push to `main`
+from theirs. `$FLUX_DIR` below stands for whichever shared checkout stopped. So the tree you are looking at holds
 another session's half-written files, and `origin/main` moves under you while
 you work. That sharing is what makes a capture reach every machine you work
 from, rather than stranding on the one that wrote it.
@@ -156,7 +157,8 @@ suite fails and whose edit causes it, and leave your commit uncommitted.
 ### J. `shared-checkout-guard` blocked the command
 
 `hooks/shared-checkout-guard.sh` refuses sweeping adds and discarding commands
-when it resolves the command's directory to `$FLUX_DIR`. It resolves that
+when it resolves the command's directory to `$FLUX_DIR` or to a repo's main
+checkout. It resolves that
 directory from a leading `cd` in the command, falling back to the session's own
 directory when the `cd` target is a shell variable it cannot expand. So a
 genuinely unrelated command in a temp repo is blocked whenever its path is
@@ -169,7 +171,8 @@ Reach for the literal path before the override:
 - `cd "$TMP" && git reset --hard` does not resolve, and is blocked.
 
 `FLUX_GUARD_SKIP=1` exists and is logged. Use it only when you have already
-confirmed the target is not `$FLUX_DIR`, and say in your response why. Never
+confirmed the target is not a shared checkout, and say in your response
+why. Never
 use it to get past a block inside the shared checkout. There, the guard is right
 and your command is wrong.
 

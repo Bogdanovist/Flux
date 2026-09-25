@@ -13,11 +13,12 @@ verified facts with `records`.
 
 ## The working doc
 
-Treat an exploration as a project of its own. Give it its own `<slug>`, its
-own Flux worktree and branch, and `projects/<slug>/findings.md` as the
-working doc. `open-project` carries the header contract, the branch-and-PR
-path and the depth advice, and `findings.md` takes all three unchanged. Once
-you have answered the question, `close-project` archives the project.
+Treat an exploration as a project of its own. Give it its own `<slug>`, and
+`<repo>/context/projects/<slug>/findings.md` as the working doc, in the repo
+the exploration serves. `open-project` carries the header contract, where the
+doc is committed, and the depth advice, and `findings.md` takes all three
+unchanged. Once you have answered the question, `close-project` places what
+survives and deletes the project.
 
 Under that header, findings.md carries three sections:
 
@@ -32,7 +33,7 @@ rests on.
 
 When a finding's re-verify command is worth storing, such as a query, a log
 grep or a test, mint a project-scoped fact record under
-`projects/<slug>/facts/` and cite it from §Findings. Storing the command is
+`context/projects/<slug>/facts/` and cite it from §Findings. Storing the command is
 what stops someone deriving the same fact again later in the exploration.
 Leave a finding with no such command as prose here. `close-project` decides
 which records outlive the project.

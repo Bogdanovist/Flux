@@ -1,6 +1,6 @@
 ---
 name: codebase-review
-description: Review standing code — correctness, security, efficiency and accreted complexity — over a named repo, path or feature, with no diff in front of it. Escalates live defects immediately and hands the weekly pass a ranked batch carrying one proposal per finding. Reads only; approved fixes land as PRs.
+description: Review standing code — correctness, security, efficiency and accreted complexity — over a named repo or path, with no diff in front of it. Escalates live defects immediately and hands the weekly pass a ranked batch carrying one proposal per finding. Reads only; approved fixes land as PRs.
 user-invocable: true
 argument-hint: "<repo | path | feature> under review"
 ---
@@ -20,9 +20,8 @@ next weekly pass, beside `context-sweep`'s batch.
 
 ## The subject
 
-Name the subject at invocation: a repo, a directory or subsystem path, or a
-feature. `features/<feature>/index.md` lists the repos a feature's code spans.
-If nobody named a subject, ask the invoker. Keep the subject small: a pass over
+Name the subject at invocation: a repo, or a directory or subsystem path
+in one. If nobody named a subject, ask the invoker. Keep the subject small: a pass over
 five repos returns more findings than one sitting can disposition, and it
 returns the same ones again the week after.
 

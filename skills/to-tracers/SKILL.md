@@ -12,8 +12,9 @@ and how big it should be. Cite that skill, and do not restate it. Confirm
 first that the design passed `review-solution-design`. If the user wants to
 proceed without that gate, that is their call.
 
-Output: `projects/<name>/tracers/<slug>.md`, one file per tracer, plus
-`projects/<name>/tracers.md` — the index, coverage manifest and runbook.
+Output: `<repo>/context/projects/<name>/tracers/<slug>.md`, one file per
+tracer, plus `<repo>/context/projects/<name>/tracers.md` — the index,
+coverage manifest and runbook.
 
 ## The spec — cite, don't restate
 

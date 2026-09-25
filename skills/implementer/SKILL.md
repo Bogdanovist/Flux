@@ -16,7 +16,9 @@ For genuinely trivial work — a typo, a one-line rename — skip the skill.
 
 ## Process
 
-0. **Resolve the slug(s)** from `tracers.md` (default: first row with no
+0. **Resolve the slug(s)** from `tracers.md` in
+   `<repo>/context/projects/<project-name>/`, in the repo's main checkout
+   (default: first row with no
    completion whose prerequisites are met), then check the re-cut gate:
    any shipped tracer with `Re-cut: pending` names a finding the project
    has not absorbed. Read its taught-section beside the spec about to run
@@ -58,6 +60,8 @@ For genuinely trivial work — a typo, a one-line rename — skip the skill.
    the project absorbs the finding. A probe always writes `pending`, because
    finding that answer was its whole purpose. Flip the index row to
    `shipped <PR>`, and say the project is due a re-cut. The user drives that.
+   Commit these edits on `main` in the main checkout, by explicit path, and
+   push.
 
 ## Sweep-ups
 

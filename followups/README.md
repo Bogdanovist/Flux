@@ -89,8 +89,8 @@ source of truth for them. In short: **fix-now** lands a commit in the
 repo it touches; **project-note** goes to a live project's doc;
 **project** opens one with `open-project`; **record** mints one via
 `records`; **rule** becomes a pending lesson for `/curate` in the same
-sitting; **standing** proposes an edit to the feature index it belongs
-to; **kill** archives with a one-line reason, and is the default.
+sitting; **standing** proposes an edit to the `context/index.md` of the
+repo it belongs to; **kill** archives with a one-line reason, and is the default.
 
 Every item exits the inbox; `archive.md` records the disposition so
 nothing silently evaporates and the kill:promote ratio stays visible.

@@ -2,20 +2,22 @@
 # Backstop for work left behind when an agent session finishes responding.
 # Outputs anything the user must act on via stderr so Claude relays it.
 #
-# Two repo shapes get two treatments. A downstream project repo is a worktree
-# per branch with one editing agent in it, so sweeping the tree there claims
-# that agent's own work — and its default branch is push-protected, so work is
-# moved onto a fresh branch before committing. The Flux context repo is one
-# checkout that all of a person's sessions share, so a sweep there is the one
-# place a session can commit another session's half-written files under a
-# message describing neither: uncommitted files are reported, never swept.
-# What Flux does get is a push path — commits a session made on the current
-# branch are pushed at session end, rebasing over whatever other machines
-# pushed meanwhile, so captures reach origin instead of stranding on a
-# laptop.
+# Two repo shapes get two treatments. A project worktree is one branch with one
+# editing agent in it, so sweeping the tree there claims that agent's own work.
+# Code reaches a project's main branch only through a PR, so work found on main
+# is moved onto a fresh branch before committing. A shared checkout — Flux, or
+# a project repo's main checkout directly under the Flux root, where sessions
+# commit the repo's context/ docs — is one tree that all of a person's sessions
+# work in, so a sweep there can commit another session's half-written files
+# under a message describing neither: uncommitted files are reported, never
+# swept. What a shared checkout does get is a push path — commits a session
+# made on the current branch are pushed at session end, rebasing over whatever
+# other machines pushed meanwhile, so captures reach origin instead of
+# stranding on a laptop.
 #
 # Environment (overridable for testing):
 #   FLUX_DIR             root of the Flux context repo (default: the checkout holding this hook)
+#   FLUX_SRC_ROOT        directory holding the checkouts (default: the directory holding FLUX_DIR)
 #   FLUX_FETCH_TIMEOUT   seconds to bound the divergence-check fetch (default 10)
 
 FETCH_TIMEOUT="${FLUX_FETCH_TIMEOUT:-10}"
@@ -59,13 +61,13 @@ auto_commit_push() {
   BRANCH=$(git branch --show-current 2>/dev/null)
   [ -z "$BRANCH" ] && return 0
 
-  # Project repos protect their default branch — a commit straight to main can
-  # never be pushed, so it strands locally and silently piles up. Move the work
-  # onto a fresh branch first, then commit/push there.
+  # Code reaches a project's default branch only through a PR, so a sweep
+  # pushed straight to main would skip review. Move the work onto a fresh
+  # branch first, then commit/push there.
   if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ]; then
     WIP_BRANCH="auto/wip-$(date +%Y%m%d-%H%M%S)"
     if git checkout -b "$WIP_BRANCH" &>/dev/null; then
-      echo "${label}: '${BRANCH}' is push-protected — moved changes onto ${WIP_BRANCH}." >&2
+      echo "${label}: '${BRANCH}' takes code only through a PR — moved changes onto ${WIP_BRANCH}." >&2
       BRANCH="$WIP_BRANCH"
     else
       echo "${label}: on protected '${BRANCH}' and could not create a work branch — changes left uncommitted." >&2
@@ -223,15 +225,21 @@ report_uncommitted() {
 
 FLUX="${FLUX_DIR:-$(cd -P "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
-# 1. Auto-commit the current project — unless it *is* the Flux context repo,
-#    which the Flux pass below handles with report-and-push semantics. Without
-#    this guard the Project pass would branch Flux off main, breaking its
-#    intended ship-straight-to-main flow.
+# 1. The current project. A project repo's main checkout is shared, so it gets
+#    the report-and-push pass; sweeping it would also branch it off main,
+#    where every session expects to find it. A worktree gets the auto-commit.
+#    Flux itself is left to the pass below.
 PROJECT_DIR="${FLUX_PROJECT_DIR:-${CLAUDE_PROJECT_DIR:-}}"
 PROJECT_REAL=$(cd "$PROJECT_DIR" 2>/dev/null && pwd -P)
 FLUX_REAL=$(cd "$FLUX" 2>/dev/null && pwd -P)
+SRC_REAL=$(cd "${FLUX_SRC_ROOT:-$FLUX/..}" 2>/dev/null && pwd -P)
 if [ -n "$PROJECT_REAL" ] && [ "$PROJECT_REAL" != "$FLUX_REAL" ]; then
-  auto_commit_push "$PROJECT_DIR" "Project"
+  if [ "$(dirname "$PROJECT_REAL")" = "$SRC_REAL" ] && [ -d "$PROJECT_REAL/.git" ]; then
+    push_local_commits "$PROJECT_REAL" "Project"
+    report_uncommitted "$PROJECT_REAL" "Project"
+  else
+    auto_commit_push "$PROJECT_DIR" "Project"
+  fi
 fi
 
 # 2. The Flux context repo: push what this session committed, report — never

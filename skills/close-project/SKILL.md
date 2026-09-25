@@ -1,6 +1,6 @@
 ---
 name: close-project
-description: Run the promotion gate when a project finishes or stops — decide per item what outlives it and where each survivor lives, then archive the project dir. Use when a working doc's work is done, when the work is abandoned or superseded, and before starting what depends on it.
+description: Run the promotion gate when a project finishes or stops — decide per item what outlives it and where each survivor lives, then delete the project dir. Use when a working doc's work is done, when the work is abandoned or superseded, and before starting what depends on it.
 ---
 
 # Close Project
@@ -13,8 +13,9 @@ decision here, item by item, and record it where others can see it.
 
 Walk everything the project accumulated:
 
-- decision records under `projects/<slug>/decisions/`
-- fact records under `projects/<slug>/facts/`
+- decision records under `context/projects/<slug>/decisions/`
+- fact records under `context/projects/<slug>/facts/`
+- terms the work coined that the repo's glossary lacks
 - verified facts and open questions still loose in the working doc
 - spikes the doc records, with their repo, branch and worktree
 - anything the doc flags as outliving the work
@@ -22,20 +23,23 @@ Walk everything the project accumulated:
 ## The decision, per item
 
 Ask of each item: **does this outlive the project?** For most items the answer
-is no, and dying with the archive is the right outcome. An archived project
-directory stays retrievable forever, and if you promote everything, the
-durable layer rots.
+is no, and dying with the project is the right outcome. The deleted
+directory stays retrievable from git history, and if you promote everything,
+the durable layer rots.
 
 For each survivor, place it at the *lowest* level that can carry it, in
 order:
 
 1. **A rename or refactor** — the code tells the truth itself. Emit a small
-   PR to that repo.
-2. **A code comment** — a constraint the code cannot show. PR to that repo.
-3. **A repo skill or that repo's AGENTS.md line** — task knowledge specific
-   to one repo. PR to that repo.
-4. **A feature record in Flux** — genuinely cross-repo, surprising, or a
-   why-not. Mint via `records` at feature scope and add the index line.
+   PR to the repo.
+2. **A code comment** — a constraint the code cannot show. PR to the repo.
+3. **A repo skill, rule or AGENTS.md line** — how to do a known task in this
+   repo. PR to the repo.
+4. **The repo's `context/`** — a glossary entry in `context/index.md`, or a
+   record moved up to `context/decisions/` or `context/facts/` with its
+   index line and `scope: repo`. Commit it with the close.
+5. **Flux** — a workflow lesson that holds in more than one repo. File it
+   with `/learn`.
 
 If you promote an item upward, show which downward options you considered. The
 close commit has to answer the question "why not a comment?".
@@ -53,15 +57,14 @@ something else covers the ground, name it: `superseded-by: <slug>` or
 `superseded-by: <record path>`.
 
 Route every still-live open question out through `followup` before the
-archive move. Nobody re-reads an archived directory, so a question left in one
-is lost.
+delete. A question left in a deleted directory is lost.
 
 ## The close commit
 
-One commit closes the project: the archive move
-(`git mv projects/<slug> projects/archive/<slug>`), plus a list of
-dispositions in the commit message or in a `CLOSE.md` in the archived
-directory, and on the abandon path the reason and the successor. List each
+One commit in the repo's main checkout closes the project: the promoted
+records and index lines, the delete (`git rm -r context/projects/<slug>`),
+and a list of dispositions in the commit message, plus on the abandon path
+the reason and the successor. Push it to `main`. List each
 item and its fate, and for each upward promotion, list the downward homes you
 ruled out. The shakedown checks two things: that you
 made the placement decisions visible, and that you considered placing the item
@@ -71,8 +74,6 @@ lower.
 
 - Treat the PRs this gate emits as ordinary PRs: reviewed on the diff, and
   merged by the user. The close does not wait for them.
-- Route any unresolved open question that still matters through `followup`
-  before you archive. If you archive an open question, you have buried it.
 - Each spike the doc records is disposed here. Code that outlives the project
   leaves as a PR to its repo first; then `git worktree remove <path>`,
   `git branch -D spike/<slug>`, and `git push origin --delete spike/<slug>`. A

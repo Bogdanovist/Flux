@@ -212,11 +212,62 @@ verify_autostash_preserves_dirty_file() {
 }
 
 # ---------------------------------------------------------------
+# 4. A project repo's main checkout is shared: the session's commit is pushed
+#    to main, another session's untracked draft is reported and left alone,
+#    and the checkout stays on main.
+# ---------------------------------------------------------------
 
-printf 'test-auto-commit-push: Flux push path\n'
+# Run the hook as a session started in a project checkout under the Flux root.
+run_hook_as_project() {
+  mkdir -p "$TEST_TMP/flux"
+  FLUX_DIR="$TEST_TMP/flux" FLUX_SRC_ROOT="$TEST_TMP" CLAUDE_PROJECT_DIR="$1" \
+    FLUX_FETCH_TIMEOUT=10 bash "$HOOK"
+}
+
+scenario_main_checkout_pushes_and_reports() {
+  mkdir -p "$CLONE_A/context"
+  printf 'glossary\n' >"$CLONE_A/context/index.md"
+  git -C "$CLONE_A" add context/index.md
+  git -C "$CLONE_A" commit -qm "context: seed the index"
+  printf 'draft\n' >"$CLONE_A/context/draft.md"
+  run_hook_as_project "$CLONE_A"
+}
+verify_main_checkout_pushes_and_reports() {
+  [ "$LAST_RC" = "0" ] || return 1
+  [ "$(git -C "$CLONE_A" branch --show-current)" = "main" ] || return 1
+  [ "$(git -C "$ORIGIN" show main:context/index.md)" = "glossary" ] || return 1
+  git -C "$CLONE_A" status --porcelain -uall | grep -q '^?? context/draft.md' || return 1
+  [ -z "$(git -C "$ORIGIN" branch --list 'auto/*')" ] || return 1
+  printf '%s' "$LAST_OUTPUT" | grep -q '1 untracked' || return 1
+  return 0
+}
+
+# ---------------------------------------------------------------
+# 5. A linked worktree is one agent's own: leftovers are committed and pushed
+#    on its branch.
+# ---------------------------------------------------------------
+
+scenario_worktree_leftovers_committed() {
+  local wt="$TEST_TMP/machine-a-worktrees/feature"
+  git -C "$CLONE_A" worktree add -q -b feature "$wt"
+  printf 'work\n' >"$wt/work.txt"
+  run_hook_as_project "$wt"
+}
+verify_worktree_leftovers_committed() {
+  [ "$LAST_RC" = "0" ] || return 1
+  [ "$(git -C "$ORIGIN" show feature:work.txt)" = "work" ] || return 1
+  [ "$(git -C "$CLONE_A" branch --show-current)" = "main" ] || return 1
+  return 0
+}
+
+# ---------------------------------------------------------------
+
+printf 'test-auto-commit-push: shared-checkout push path\n'
 run_test disjoint_files_both_land
 run_test conflict_reports_not_resolves
 run_test autostash_preserves_dirty_file
+run_test main_checkout_pushes_and_reports
+run_test worktree_leftovers_committed
 
 printf '\n%d passed, %d failed\n' "$PASS" "$FAIL"
 if [ "$FAIL" -gt 0 ]; then

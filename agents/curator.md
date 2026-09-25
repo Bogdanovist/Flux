@@ -158,8 +158,8 @@ pass the bar.
   lesson that a hook, lint, test or gate could hold mechanically proposes
   that mechanism (as a `fix-followup`, like better-fixed), not prose. A
   lesson that is really a durable decision or invariant to hold proposes a
-  decision record at its scope (`features/{f}/decisions/` or
-  `projects/{p}/decisions/`), not a rule line. Rule prose is the right
+  decision record at its scope (`<repo>/context/decisions/` or
+  `<repo>/context/projects/{p}/decisions/`), not a rule line. Rule prose is the right
   form only for genuinely working-style guidance — how agents should
   work, not what the system must guarantee.
 - **Net-new-context restraint.** Every line added to `AGENTS.md`, a

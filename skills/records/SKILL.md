@@ -28,31 +28,65 @@ future pass could break it without noticing, or arguing it again would cost
 real time.
 
 The bar changes with scope. A project-scoped record costs you the writing and
-nothing after that, because it dies with the archive unless the close gate
+nothing after that, because it dies with the project unless the close gate
 promotes it. Write one whenever deriving the fact again would cost more than
 storing the command that re-verifies it.
 
-Feature scope costs much more. Apply the placement test first: if a rename, a
+Repo scope costs much more. Apply the placement test first: if a rename, a
 comment or a repo rule could carry the fact, put it there and write no record.
-Reach for a feature-scoped record only when nothing lower can hold the fact.
+Reach for a repo-scoped record only for a pivotal decision or fact that a
+newcomer to the repo could not guess, and that nothing lower can hold.
 
 ## Scope, settled at minting
 
-- This project only → `projects/<slug>/decisions/<slug>.md` or
-  `projects/<slug>/facts/<slug>.md`. Dies with the archive unless promoted at
-  close.
-- Holds across projects → `features/<feature>/decisions/<slug>.md` or
-  `features/<feature>/facts/<slug>.md`, plus its one-line entry in the feature
-  index. A feature-scoped record taxes every future pass: each design in that
-  area has to verify it when it cites it. Write one only when you want a
-  future project to stop and check it.
+Paths are relative to the repo's main checkout, per `AGENTS.md` §Where
+context lives.
+
+- This project only → `context/projects/<slug>/decisions/<name>.md` or
+  `context/projects/<slug>/facts/<name>.md`. Dies with the project unless
+  promoted at close.
+- Holds for the repo beyond any one project → `context/decisions/<name>.md`
+  or `context/facts/<name>.md`, plus its one-line entry in
+  `context/index.md`. A repo-scoped record taxes every future pass: each
+  design in that repo has to verify it when it cites it. Write one only when
+  you want a future project to stop and check it.
+
+## The repo index
+
+`context/index.md` is the entry point to a repo's context. Keep it short
+enough to read in full at the start of any task:
+
+```markdown
+# <Repo name>
+
+<One paragraph: what is being built, and for whom.>
+
+## Glossary
+## Decisions — one line per record: the canonical statement, then the path
+## Facts — the same, one line per record
+```
+
+A glossary entry names a term in the repo's domain language, in two lines:
+
+> **Backup Verification** — nightly checks of aggregate statistics over the
+> archives the importer writes, reporting anomalies to the notification
+> channel. *Currently:* `tools/backups/verify.py`, run by the nightly job.
+
+- Write the definition line for purpose alone. Name no runtime and no paths.
+  It should still be true after someone rewrites the code.
+- The *Currently* line is the one part that goes stale. Leave it out until
+  the thing is built. The change that builds it adds the line, and whoever
+  renames the code updates it.
+- Add an entry when a rule, a record or a design statement first cites the
+  term. Delete it when nothing cites it. Do not add entries for
+  completeness.
 
 ## The decision format
 
 ```markdown
 ---
 name: <slug>
-scope: project:<name> | feature:<name>
+scope: project:<slug> | repo
 status: held
 built: yes | no | partial
 verified: <YYYY-MM-DD>
@@ -74,7 +108,7 @@ what is missing and the command that re-verifies its absence.
 ```markdown
 ---
 name: <slug>
-scope: project:<name> | feature:<name>
+scope: project:<slug> | repo
 status: held
 verified: <YYYY-MM-DD>
 ---

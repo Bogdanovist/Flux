@@ -35,8 +35,8 @@ directly when no wrapper fits.
   that consequence.
 - **Sharpen fuzzy terms.** When a word is overloaded — "account", "cancel",
   "the pipeline" — propose the precise alternatives and force the choice,
-  checking terms against the feature glossary where one exists. A wrong term
-  compounds through every sentence that follows.
+  checking terms against the glossary in the repo's `context/index.md`. A
+  wrong term compounds through every sentence that follows.
 - **Use concrete scenarios.** For a hand-wavy decision, invent the specific
   case that forces precision: "the upstream returns 500 mid-batch — retry
   the rows, drop the batch, or fail the job?" Agreeing on a fuzzy

@@ -10,8 +10,9 @@ Verify-at-cite checks the context somebody cites. This sweep hunts the context
 nobody cites, which is exactly the context that rots.
 
 Run it weekly over Flux and the project repos the caller names. With no
-repos named, take the `repos:` line of every live doc under `projects/`, plus
-Flux itself, and say which list you swept — a sweep whose scope nobody can
+repos named, take every repo with an open project
+(`ls -d $FLUX_SRC_ROOT/*/context/projects/*/`), plus Flux itself, and say
+which list you swept — a sweep whose scope nobody can
 name cannot be re-run against the same ground. The sweep only reads, and it
 only proposes. Land approved changes as commits or PRs afterwards, and never
 as silent edits.
@@ -39,10 +40,10 @@ themselves stay strictly read-only.
 
 ## What it reads, per repo
 
-Read the repo's AGENTS.md and CLAUDE.md and its rules files, its skills, and
-its code comments wherever they make a checkable claim. In Flux, also read
-the feature indexes, the decision records, and every working doc under
-`projects/`. Run one read-only agent per repo, in parallel. Each one returns
+Read the repo's AGENTS.md and CLAUDE.md, its rules files, its skills, its
+`context/` — the index, the records, and every working doc under
+`context/projects/` — and its code comments wherever they make a checkable
+claim. Run one read-only agent per repo, in parallel. Each one returns
 findings in the four classes below, with evidence.
 
 ## The four finding classes
@@ -52,21 +53,23 @@ findings in the four classes below, with evidence.
   record whose re-verify command fails, a `Currently:` pointer that no
   longer resolves. Evidence: the claim, the command run, what it returned.
 - **misplaced** — content sitting at the wrong level of the hierarchy:
-  AGENTS.md prose that belongs in a skill, a Flux record that could now be
-  a code comment, a record that has gained an enforcer and should absorb into
+  AGENTS.md prose that belongs in a skill or in `context/`, a record that
+  could now be a code comment, repo guidance that repeats the Flux charter, a record that has gained an enforcer and should absorb into
   it, or a working doc missing its header contract.
 - **bloat / uncited** — near-duplicate rules, a section nobody has needed, and
   records nothing has cited in a long time. These are your kill candidates,
   and killing them is the cheapest fix in the whole system.
-- **dormant** — a working doc in `projects/` that reads as live work when no
-  work is in flight. `open-project` names the harm: the next agent reads a
-  plan on `main` as settled and in flight, and builds on it. Evidence: the
-  last commit under `projects/<slug>/` with its date and subject, what the
+- **dormant** — a working doc in `context/projects/` that reads as live work
+  when no work is in flight. `open-project` names the harm: the next agent
+  reads a plan on `main` as settled and in flight, and builds on it.
+  Evidence: the last commit under `context/projects/<slug>/` with its date
+  and subject, what the
   doc says happens next, and what the repos show against that.
 
 ## Judging a dormant project
 
-Two weeks with no commit under `projects/<slug>/` is the trigger to look. It
+Two weeks with no commit under `context/projects/<slug>/` is the trigger to
+look. It
 settles nothing on its own. Every edit to a project doc pushes straight to
 `main`, so an idle directory means idle work, and not work held on a branch. A
 fresh commit proves no more, because a rename or a sweep fix touches a dead
@@ -75,11 +78,11 @@ doc without advancing it.
 Reach the verdict from the whole picture:
 
 - **The doc.** It states what happens next. Did that happen?
-- **The work.** Check the repos in the doc's `repos:` line for the branches,
-  PRs and code it promised. Shipped work under an open doc is a project that
+- **The work.** Check the doc's repo for the branches, PRs and code it
+  promised. Shipped work under an open doc is a project that
   needs closing.
-- **A successor.** A newer doc, record or feature index covering the same
-  ground supersedes this one.
+- **A successor.** A newer doc or record covering the same ground supersedes
+  this one.
 
 Idle and live is a real state: the work waits on an upstream release, on a
 deploy you have to run by hand, or on a decision you have not made. Name what

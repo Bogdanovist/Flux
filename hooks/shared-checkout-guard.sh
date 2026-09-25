@@ -4,9 +4,11 @@
 # Blocks the two git commands that cannot be used safely in a checkout shared by
 # concurrent sessions, and names the safe form in the block reason.
 #
-# Flux is one checkout on main that every session works in at once. Two
-# command shapes are unsafe there, and both fail silently — the damage is only
-# visible later, in someone else's history or in work that is simply gone:
+# Two kinds of checkout sit on main with every session working in them at
+# once: Flux, and the main checkout of each project repo directly under the
+# Flux root, where sessions commit the repo's context/ docs. Two command shapes
+# are unsafe there, and both fail silently — the damage is only visible later,
+# in someone else's history or in work that is simply gone:
 #
 #   Sweeps    `git add -A|.|--all`, `git commit -a|-am` stage whatever any other
 #             session has half-written, so their work lands in a commit whose
@@ -17,10 +19,11 @@
 #             destroy uncommitted changes belonging to whoever made them. There
 #             is no reflog for unstaged work: it is gone, not recoverable.
 #
-# Project repos are exempt by construction — a worktree per branch with one
+# Project worktrees are exempt by construction — a worktree per branch with one
 # editing agent in it, where a sweep claims that agent's own work and a discard
 # throws away only its own. The guard therefore fires only when the command acts
-# on the Flux checkout.
+# on the Flux checkout or on a main checkout: a directory directly under the
+# Flux root whose `.git` is a directory. A linked worktree's `.git` is a file.
 #
 # This is a gate, not a nudge: it blocks, because both failures are silent and
 # both have a correct alternative that costs only keystrokes. Every block names
@@ -30,6 +33,7 @@
 # out of the command string, so it works from the Bash tool); logged.
 #
 # Tunables (env): FLUX_DIR (default: the checkout holding this hook),
+# FLUX_SRC_ROOT (default: the directory holding FLUX_DIR),
 # FLUX_GUARD_SKIP=1 (bypass), FLUX_LOG_DIR.
 
 set -uo pipefail
@@ -79,7 +83,10 @@ CMD_DIR=$(resolve_command_dir "$STRIPPED" "$FALLBACK_CWD")
 
 TARGET_REAL=$(cd "$CMD_DIR" 2>/dev/null && pwd -P) || exit 0
 FLUX_REAL=$(cd "$FLUX" 2>/dev/null && pwd -P) || exit 0
-[[ "$TARGET_REAL" == "$FLUX_REAL" ]] || exit 0
+SRC_REAL=$(cd "${FLUX_SRC_ROOT:-$FLUX/..}" 2>/dev/null && pwd -P) || exit 0
+if [[ "$TARGET_REAL" != "$FLUX_REAL" ]]; then
+  [[ "$(dirname "$TARGET_REAL")" == "$SRC_REAL" && -d "$TARGET_REAL/.git" ]] || exit 0
+fi
 
 block() {
   mkdir -p "$LOG_DIR" 2>/dev/null || true
@@ -155,7 +162,7 @@ while IFS= read -r seg; do
 done < <(command_segments "$STRIPPED")
 
 if [[ "$SWEEP_KIND" == "git-add-sweep" ]]; then
-  block "$SWEEP_KIND" "Blocked: \`git add\` with -A/--all/. in the shared Flux checkout at ${FLUX_REAL}.
+  block "$SWEEP_KIND" "Blocked: \`git add\` with -A/--all/. in the shared checkout at ${TARGET_REAL}.
 
 Every session works in this one checkout at once, so a sweep stages whatever another session has half-written and commits it under a message describing none of it. The owning session then finds its work already committed by a message it did not write.
 
@@ -168,7 +175,7 @@ Name the files this change owns:
 fi
 
 if [[ "$SWEEP_KIND" == "git-commit-all" ]]; then
-  block "$SWEEP_KIND" "Blocked: \`git commit\` with -a/--all in the shared Flux checkout at ${FLUX_REAL}.
+  block "$SWEEP_KIND" "Blocked: \`git commit\` with -a/--all in the shared checkout at ${TARGET_REAL}.
 
 -a stages every tracked modification in the tree, including files another concurrent session is mid-edit, under a message describing none of them.
 
@@ -180,7 +187,7 @@ To override: prefix the command with \`FLUX_GUARD_SKIP=1 \` (logged to ${LOG_FIL
 fi
 
 if [[ -n "$DISCARD_KIND" ]]; then
-  block "$DISCARD_KIND" "Blocked: a discarding git command in the shared Flux checkout at ${FLUX_REAL}.
+  block "$DISCARD_KIND" "Blocked: a discarding git command in the shared checkout at ${TARGET_REAL}.
 
 \`git checkout -- <path>\`, \`git restore <path>\` and \`git reset --hard\` destroy uncommitted changes belonging to whoever made them. There is no reflog for unstaged work — it is gone, not recoverable — and in this checkout it may not be yours.
 

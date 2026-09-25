@@ -6,9 +6,10 @@ argument-hint: "<project-name>"
 
 # Solution Design
 
-Produces `projects/<name>/solution-design.md` — a working doc grown
-heavyweight, carrying the same header contract as any plan (`started:`,
-`repos:`) and committed to `main` in Flux like any other project doc. One
+Produces `<repo>/context/projects/<name>/solution-design.md` — a working doc
+grown heavyweight, carrying the same header contract as any plan
+(`started:`) and committed to `main` in the repo's main checkout like any
+other project doc. One
 spine doc per project, edited in place; git history is the audit log. The spine supersedes and replaces `plan.md`: fold what the plan
 still needs into the spine, and delete `plan.md` in the same change. A
 project carries one working doc.
@@ -105,22 +106,9 @@ one blank.
 ### Glossary entries
 
 Every rule needs a subject that lasts. It must exist at design time, before
-anyone writes code, and it must survive every refactor. Put that subject in the
-glossary in `features/{feature}/index.md`, in two lines:
-
-> **Backup Verification** — nightly checks of aggregate statistics over the
-> archives the importer writes, reporting anomalies to the notification
-> channel. *Currently:* `tools/backups/verify.py`, run by the nightly job.
-
-- Write the definition line for purpose alone. Name no runtime and no paths.
-  You write this line while planning, and it should still be true after someone
-  rewrites the code.
-- The *Currently* line is the one part that goes stale. Leave it out until the
-  thing is built. The slice that builds it adds the line, and whoever renames
-  the code updates it. If it does go stale, the next reader who cites the entry
-  pays a search, not a wrong rule.
-- Add an entry when a rule or a design statement first cites it. Delete it when
-  nothing cites it. Do not add entries for completeness.
+anyone writes code, and it must survive every refactor. Put that subject in
+the glossary in the repo's `context/index.md`, in the form `records` §The
+repo index gives.
 
 `prose-checks.md`, beside this skill, shows how to catch the six habits
 `AGENTS.md` names, and works one rewrite in full. Read it if you are meeting
@@ -140,9 +128,8 @@ these forms for the first time.
 - **Supersession repeals decisions, never findings.** Superseding an
   artefact means routing its recorded facts forward as inputs; deleting
   them re-discovers them at full price.
-- **The feature layer stays thin** — `features/<name>/index.md` (purpose,
-  glossary, `owner:`, debts, record list) plus `decisions/`. No standing
-  narrative docs; when a pass needs the current-state story, generate it
+- **The repo layer stays thin** — `context/index.md` (purpose, glossary,
+  record list) plus `decisions/` and `facts/`. No standing narrative docs; when a pass needs the current-state story, generate it
   from code and cited records, use it, discard it.
 
 ## Close and refine

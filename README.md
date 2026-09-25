@@ -5,7 +5,8 @@ global instructions, the skills, the subagents, the hooks, the model tiers, and
 the version-controlled context that shape how agentic coding sessions behave.
 
 It ships no product code. It is the operating system for the agent: how it
-works, what it knows, and where its accumulated context lives.
+works in every repo. What a repo is and what was decided about it lives in
+that repo's own `context/` directory, beside its code.
 
 ## What's in here
 
@@ -18,8 +19,6 @@ works, what it knows, and where its accumulated context lives.
 | `agents/` | Subagent definitions — researcher, debugger, verifier, curator, test-runner, and the rest. |
 | `model-profiles.toml` | The `best` / `mid` / `cheap` tier contract and its provider mappings. |
 | `hooks/` | Lifecycle hooks — checkout sync, skill relink, the debt-review nudge, the lessons drain, auto-commit-push, the shared-checkout guard, the secrets scan. |
-| `projects/` | One directory per multi-session piece of work, archived on close. |
-| `features/` | The durable cross-repo layer: feature indexes and their decision and fact records. |
 | `learnings/` | The pipeline that turns session lessons into guidance changes. See `learnings/README.md`. |
 | `followups/` | The inbox for deferred fixes and judgement calls, drained by `/triage`. See `followups/README.md`. |
 | `reminders/` | Work already scheduled for a date, which nags from that date until the file is deleted. |
@@ -76,12 +75,15 @@ checkout on its own, and changes take effect on the next session.
 branch here needs a stated reason. Project repos work the other way: a feature
 branch, a PR raised when the slice is built, `reviewing-diff` posting its
 findings as PR comments, and a merge only on my explicit approval for that PR.
+The exception is a repo's `context/`, which commits straight to `main` in the
+repo's main checkout.
 An agent never approves a PR on GitHub.
 
 **The Stop hook is a backstop, and it treats the two repo shapes
-differently.** In Flux it pushes what the session committed and names what is
-still uncommitted, because every session shares this one checkout and a sweep
-here would commit another session's half-written file. In a project worktree
+differently.** In a shared checkout — Flux, or a repo's main checkout — it
+pushes what the session committed and names what is still uncommitted,
+because every session shares that one tree and a sweep there would commit
+another session's half-written file. In a project worktree
 it moves uncommitted work onto a fresh branch and commits it there, so nothing
 lands on `main` without a PR. Commit your own work by path as you go; the hook
 is what gets it to origin.
@@ -89,15 +91,16 @@ is what gets it to origin.
 **Skills carry the methodology; repo docs carry the specifics.** A skill here
 is globally authoritative, and a project repo's `.claude/` does not shadow it.
 Repo-specific guidance lives in that repo's `AGENTS.md`, its checked-in
-`.claude/rules/*.md`, or its project docs.
+`.claude/rules/*.md` and `.claude/skills/`, or its `context/`.
 
 **Model selection uses tiers, not provider names.** Skills request `best`,
 `mid` or `cheap`; `model-profiles.toml` maps those to a provider's models.
 Keep provider-specific model IDs in that file, never in skill prose.
 
 **Context is version-controlled, not remembered.** Auto memory is off.
-Anything worth persisting lands in one of the stores above: a project doc, a
-feature record, or the `learnings/` pipeline when it is a behaviour change.
+Anything worth persisting lands in a repo's `context/` — a project doc, a
+record, a glossary entry — or in the `learnings/` pipeline when it is a
+behaviour change. `AGENTS.md` §Where context lives gives the layout.
 
 **The weekly pass is nudged, not scheduled.** `hooks/debt-review-nudge.sh`
 reads the follow-up inbox, the lessons pile and the reminders at session start,

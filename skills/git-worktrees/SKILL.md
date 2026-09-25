@@ -1,6 +1,6 @@
 ---
 name: git-worktrees
-description: The recipe for the one worktree path the charter allows — where a worktree goes, how to create it, how to work in it, and how it gets reaped. Use when starting any branch of work, in any repo, including Flux's own charter, skills and project docs.
+description: The recipe for the one worktree path the charter allows — where a worktree goes, how to create it, how to work in it, and how it gets reaped. Use when starting any branch of work, in any repo. It also says where Flux changes and a repo's context/ docs commit instead.
 user-invocable: true
 ---
 
@@ -52,22 +52,26 @@ Not every repo's default branch is `main`. Check before you assume.
 - Before you touch anything in a worktree you did not just create, run
   `git status` and `git stash list`. Someone may have left work in it.
 
-## Flux is the exception
+## Shared checkouts are the exception
 
-Flux is your own context repo, and every change to it — the charter, the
-skills, the rules, a project doc, a capture — commits in the shared
-`$FLUX_DIR` checkout and pushes to `main`.
+Two kinds of change commit on `main` in a checkout that every session shares,
+with no worktree:
 
-Take a worktree here only for a reason you can state, and say the reason when
-you take one: a change you want to be able to abandon cleanly, or one whose
-several commits only make sense together. Everything else goes to `main`.
+- Every change to Flux — the charter, the skills, a capture — commits in
+  `$FLUX_DIR`. Take a worktree there only for a reason you can state, and
+  say the reason when you take one: a change you want to be able to abandon
+  cleanly, or one whose several commits only make sense together.
+- Every change to a repo's `context/` — a project doc, a record, the index —
+  commits in that repo's main checkout, `$FLUX_SRC_ROOT/<repo>`. Keep that
+  checkout on `main`, and edit nothing outside `context/` there.
 
-Commit only the files your own change owns, by explicit path. Other sessions
-work in that same checkout, so a sweep with `git add -A` takes their
-half-written work with it, and `hooks/shared-checkout-guard.sh` blocks it.
+Commit only the files your own change owns, by explicit path, and push.
+Other sessions work in that same checkout, so a sweep with `git add -A` takes
+their half-written work with it, and `hooks/shared-checkout-guard.sh` blocks
+it.
 
-If git stops in that shared checkout, follow `resolving-sync-conflicts`
-before you run a second git command.
+If git stops in a shared checkout, follow `resolving-sync-conflicts` before
+you run a second git command.
 
 ## Reap it
 

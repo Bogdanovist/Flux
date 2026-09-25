@@ -63,12 +63,12 @@ distinct signals in distinct tracers, even when they share tables.
 
 One per tracer, about a page: slug; kind (`probe` names its question);
 a behaviour-facing description; the architectural target (citing the
-feature debt or record where one exists); the observable signal, one
+record where one exists); the observable signal, one
 sentence; scope in/out; prerequisite slugs. The brief commits to shape —
 flows, file pointers and verification belong in `to-tracers`' spec.
 
-Briefs live in `projects/<name>/tracers/` (or the feature dir when no
-project exists; emit to chat when neither is named). Propose the slices and
+Briefs live in `<repo>/context/projects/<name>/tracers/` (emit to chat when
+no project is named). Propose the slices and
 read the briefs back before writing — slice boundaries, "one tracer or
 three", and what counts as the signal are grilling territory, and the user
 cuts.

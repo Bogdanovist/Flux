@@ -4,10 +4,10 @@
 # Verifies the contract the shared checkout depends on: the two unsafe command
 # shapes — sweeps (`git add -A|.|--all`, `git commit -a`) and discards
 # (`git checkout -- <path>`, `git restore <path>`, `git reset --hard`) — are
-# blocked when they act on the Flux checkout, whether the session sits in it,
-# `cd`s into it, or names it with `git -C`; the same commands pass untouched in
-# a worktree, because the guard keys on the checkout's physical path, not on
-# the command alone; safe forms (named pathspecs, branch switches,
+# blocked when they act on the Flux checkout or on a project repo's main
+# checkout, whether the session sits in it, `cd`s into it, or names it with
+# `git -C`; the same commands pass untouched in a linked worktree, because the
+# guard keys on the checkout's physical path, not on the command alone; safe forms (named pathspecs, branch switches,
 # `git restore --staged`, soft resets) pass everywhere; a command that merely
 # quotes a dangerous pattern in prose or a heredoc is never blocked; the
 # inline escape hatch works and is logged; and every block is delivered as a
@@ -45,8 +45,12 @@ setup() {
   FLUX_FIX="$TEST_TMP/flux"
   WORKTREE_FIX="$TEST_TMP/flux-worktrees/feature"
   ELSEWHERE="$TEST_TMP/elsewhere"
+  MAIN_FIX="$TEST_TMP/app"
+  APP_WORKTREE_FIX="$TEST_TMP/app-worktrees/feature"
   LOG_DIR="$TEST_TMP/logs"
-  mkdir -p "$FLUX_FIX" "$WORKTREE_FIX" "$ELSEWHERE"
+  mkdir -p "$FLUX_FIX" "$WORKTREE_FIX" "$ELSEWHERE" "$MAIN_FIX/.git" "$APP_WORKTREE_FIX"
+  # A linked worktree carries a `.git` file pointing at the main checkout.
+  printf 'gitdir: %s/.git/worktrees/feature\n' "$MAIN_FIX" >"$APP_WORKTREE_FIX/.git"
 }
 teardown() { rm -rf "$TEST_TMP"; }
 
@@ -54,7 +58,7 @@ teardown() { rm -rf "$TEST_TMP"; }
 run_guard() {
   jq -cn --arg cmd "$1" --arg cwd "$2" --arg tool "${3:-Bash}" \
       '{tool_name:$tool, tool_input:{command:$cmd}, cwd:$cwd}' \
-    | FLUX_DIR="$FLUX_FIX" FLUX_LOG_DIR="$LOG_DIR" bash "$HOOK" 2>&1
+    | FLUX_DIR="$FLUX_FIX" FLUX_SRC_ROOT="$TEST_TMP" FLUX_LOG_DIR="$LOG_DIR" bash "$HOOK" 2>&1
 }
 
 # expect_block <name> <command> <cwd> [reason-fragment]
@@ -132,6 +136,16 @@ expect_block "blocks a discard via git -C <flux>" \
              "git -C $FLUX_FIX reset --hard" "$ELSEWHERE"
 expect_block "blocks cd <flux> && sweep from elsewhere" \
              "cd $FLUX_FIX && git add -A" "$ELSEWHERE"
+expect_block "blocks a sweep in a project's main checkout" \
+             'git add -A' "$MAIN_FIX" 'shared checkout'
+expect_block "blocks a discard in a project's main checkout" \
+             'git reset --hard' "$MAIN_FIX"
+expect_block "blocks git -C <main checkout> from elsewhere" \
+             "git -C $MAIN_FIX add -A" "$ELSEWHERE"
+expect_allow "allows a sweep in a project's linked worktree" \
+             'git add -A' "$APP_WORKTREE_FIX"
+expect_allow "allows named paths in a project's main checkout" \
+             'git add -- context/index.md' "$MAIN_FIX"
 ln -s "$FLUX_FIX" "$TEST_TMP/flux-link"
 expect_block "resolves a symlinked cwd to the checkout" \
              'git add -A' "$TEST_TMP/flux-link"
@@ -163,7 +177,7 @@ expect_allow "ignores other tools"          'git add -A'   "$FLUX_FIX" "Read"
 expect_allow "ignores commands without git" 'ls -la'       "$FLUX_FIX"
 out=$(jq -cn --arg cwd "$FLUX_FIX" \
         '{tool_name:"Bash", tool_input:{command:"git add -A"}, cwd:$cwd}' \
-      | FLUX_DIR="$TEST_TMP/does-not-exist" FLUX_LOG_DIR="$LOG_DIR" bash "$HOOK" 2>&1)
+      | FLUX_DIR="$TEST_TMP/does-not-exist" FLUX_SRC_ROOT="$TEST_TMP" FLUX_LOG_DIR="$LOG_DIR" bash "$HOOK" 2>&1)
 if [ -z "$out" ]; then
   ok "fails open when the configured checkout path is absent"
 else

@@ -49,7 +49,7 @@ Use the Agent tool to launch all three agents concurrently in a single message. 
 - The screenshot directory path (it will use `Read` on PNGs to view them).
 - The list of screenshot filenames so it knows what to review.
 - The path to the designer mock if `--mock` was passed (otherwise, reason from general design principles).
-- A concise context blurb: branch name, commit log against `origin/main`, plan path if one exists at `$FLUX_DIR/projects/<slug>/plan.md`, and any project-level design tokens referenced in `BRAND_COLOURS` or equivalent.
+- A concise context blurb: branch name, commit log against `origin/main`, plan path if one exists at `<repo>/context/projects/<slug>/plan.md`, and any project-level design tokens referenced in `BRAND_COLOURS` or equivalent.
 
 **Verify before flagging.** Each agent MUST cite a specific screenshot file (and approximate region — "top-right of the safety-signals tile", "x-axis tick labels of the ITS chart") for every finding. No flagging from memory. No findings without a citation.
 

@@ -20,26 +20,44 @@ use a cloud, database or work credential that you find on the machine.
 
 ## Where context lives
 
-Put context at the lowest level that can carry it. Reach for Flux only when
-no lower level will do:
+Put context at the lowest level that can carry it:
 
 1. **Code structure and names.** If the code itself can carry the fact,
    delete the documentation that repeats it.
 2. **Code comments** — only what the code cannot show: a constraint, an
    external contract, a why-not. Never what the next line does, and never
    the history of a diff.
-3. **A project repo's own AGENTS.md, `.claude/rules/*.md` and skills** — how
-   to do known tasks that need context specific to that one repo. Read this
-   guidance before you change code there, whatever provider you run under;
-   treat a rule as provider-specific only when its text says so.
-4. **Flux** — cross-repo context: feature records and indexes, cross-repo
-   skills, this charter. Only what is genuinely cross-repo, surprising, or a
-   why-not with no lower home.
+3. **The repo's AGENTS.md, `.claude/rules/*.md` and `.claude/skills/`** —
+   how to do known tasks in that one repo. Read this guidance before you
+   change code there, whatever provider you run under; treat a rule as
+   provider-specific only when its text says so.
+4. **The repo's `context/`** — what the thing being built is, and what a
+   newcomer to the repo could not guess:
+   - `context/index.md` holds the purpose in a paragraph, the glossary of
+     the repo's domain language, and one line per record.
+   - `context/decisions/` and `context/facts/` hold the pivotal,
+     non-obvious decisions and verified facts. `records` sets the bar and
+     the format.
+   - `context/projects/<slug>/` holds the working doc of each open project
+     in that repo. `open-project` creates it. `close-project` deletes it
+     once the survivors are placed.
 
-To promote a fact, usually push it *down* toward the code: rename something,
-add a comment, write a repo rule. Pushing it up into Flux is the last option.
-Give every durable statement one canonical home, and cite that home
-everywhere else.
+   The repo's AGENTS.md points to `context/index.md` in one line, so an
+   agent opens the index only when the task needs it.
+5. **Flux** — how I work in every repo: this charter, the workflow skills,
+   the agents, the hooks, the capture pipelines, and the workflow facts that
+   hold in more than one repo.
+
+`<repo>` in a context path means the repo's main checkout,
+`$FLUX_SRC_ROOT/<repo>`, which stays on `main`. Edit `context/` only there,
+commit it by explicit path, and push. A worktree's copy of `context/` is
+stale from the moment the branch is cut, so read a plan from the main
+checkout. Find a project by name with
+`ls -d $FLUX_SRC_ROOT/*/context/projects/<slug>`.
+
+To promote a fact, push it *down* toward the code: rename something, add a
+comment, write a repo rule. Give every durable statement one canonical home,
+and cite that home everywhere else.
 
 Provider auto memory is off. "Remember this" means writing to one of the
 stores above, never to a memory file.
@@ -235,9 +253,9 @@ maps the tiers, and provider adapters translate them at install time.
 ## The core loop
 
 1. **Open.** If the work is more than trivial, write a working doc under
-   `projects/`. State the intent and the approach. `open-project` creates it.
-   The tracer-flow spine is the same doc grown heavyweight, and you can
-   always skip it.
+   `<repo>/context/projects/`. State the intent and the approach.
+   `open-project` creates it. The tracer-flow spine is the same doc grown
+   heavyweight, and you can always skip it.
 2. **Review before the build, at the doc's own depth.** A light plan I read
    myself; say what you want me to look at. A `solution-design` spine gets
    `review-solution-design` in a cold context, because a design an
@@ -249,7 +267,8 @@ maps the tiers, and provider adapters translate them at install time.
    records. Send lessons to `/learn`, and route incidental finds through
    `followup`. Capturing costs little, and nothing gates it.
 4. **Close.** Run `close-project` to work the promotion gate. Place whatever
-   outlives the project per the hierarchy above, then archive the project.
+   outlives the project per the hierarchy above, then delete the project
+   directory.
 5. **Weekly.** The session-start nudge fires when the follow-up inbox or the
    lessons pile crosses its threshold. `/triage` clusters the inbox and
    `/curate` clears the lessons.
@@ -265,8 +284,9 @@ a branch only for a reason you can state — a change you want to abandon
 cleanly, or one that needs several commits to be coherent. Say the reason when
 you take one. Review and verification still apply on `main`.
 
-**Project repos take a feature branch and a PR.** Raise the PR when the slice
-is built, then run `reviewing-diff` and let its findings land as PR comments
+**Project repos take a feature branch and a PR for everything outside
+`context/`.** `context/` commits straight to `main`, so every session reads
+the current plan. Raise the PR when the slice is built, then run `reviewing-diff` and let its findings land as PR comments
 anchored to the lines they judge. Answer each one with a commit or a reply.
 
 **Merging needs my explicit approval.** Merge a PR only when I tell you to
@@ -279,9 +299,9 @@ work on its diff, where a reader can read the whole of it.
 
 ## Worktrees and agent safety
 
-Edits land in project repos, but `$FLUX_SRC_ROOT/{REPO}/` is usually on another branch.
-Do not edit it directly, and do not invent ad-hoc sibling paths. One worktree
-per branch:
+Code lands in project repos through worktrees. The main checkout
+`$FLUX_SRC_ROOT/{REPO}/` stays on `main`, and the only edits made there are to
+its `context/`. Do not invent ad-hoc sibling paths. One worktree per branch:
 
 ```bash
 git -C $FLUX_SRC_ROOT/{REPO} fetch origin
@@ -290,8 +310,8 @@ cd $FLUX_SRC_ROOT/{REPO}-worktrees/{branch-slug}
 ```
 
 `{branch-slug}` is the branch name with `/` replaced by `-`. Run every git,
-build and test command from inside the worktree, and return to Flux only to
-write context. Reap merged worktrees with
+build and test command from inside the worktree, and go to the main
+checkout only to write `context/`. Reap merged worktrees with
 `$FLUX_DIR/scripts/cleanup-merged-worktrees.sh [--apply]`; use `git worktree
 remove`, never `rm -rf`.
 
@@ -316,19 +336,20 @@ without deploy rights — that boundary is the design. If it blocks something
 that should be allowed, say so and let me widen it. Do not borrow my identity
 to get past it.
 
-## Working in Flux itself
+## Shared checkouts
 
-Several sessions work in the one `$FLUX_DIR` checkout on `main` at once, and
-that is the normal condition. Commits you did not make will appear in the log,
+Several sessions work at once on `main` in the `$FLUX_DIR` checkout and in
+each repo's main checkout, and that is the normal condition. Commits you did not make will appear in the log,
 `main` will move under you, and `git status` will show files another session
 is mid-edit. None of that is a fault, and none of it needs investigating.
 
 Commit only the files your own change owns, by explicit path.
 `hooks/shared-checkout-guard.sh` blocks `git add -A`, `git commit -a` and the
 discarding commands (`git checkout -- <path>`, `git restore`, `git reset
---hard`) here, and that block is the design. Nothing sweeps your work into a
-commit for you, so anything you leave uncommitted is still yours at session
-end. When git stops in that checkout, follow `resolving-sync-conflicts`.
+--hard`) in these checkouts, and that block is the design. Nothing sweeps your
+work into a commit for you, so anything you leave uncommitted is still yours
+at session end. When git stops in a shared checkout, follow
+`resolving-sync-conflicts`.
 
 ## Capture and curation
 

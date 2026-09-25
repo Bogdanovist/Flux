@@ -53,7 +53,7 @@ Most follow-ups should die on the record.
 | **project** | Worth its own piece of work | Open it with `open-project` (or `solution-design`); archive `project: <slug>` |
 | **record** | A durable decision, or a measured fact, that no enforcer holds | Mint via `records` at its scope and kind; archive `record: <path>` |
 | **rule** | Recurring "we keep getting X wrong" | Climb the form ladder first — an enforcer beats a record beats prose. Only working-style guidance becomes a pending lesson for `curate`; archive `rule: <uuid>` |
-| **standing** | A durable domain fact worth holding, not a discrete fix | Propose the edit to the feature index it belongs to; archive `standing: <path>` |
+| **standing** | A durable domain fact worth holding, not a discrete fix | Propose the edit to the `context/index.md` of the repo it belongs to; archive `standing: <path>` |
 | **kill** | Not worth it | Archive `killed: <one-line reason>` — the default |
 
 Every disposition is yours to make in the sitting. Nothing stays in the inbox

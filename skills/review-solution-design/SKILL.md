@@ -82,7 +82,7 @@ standing classes, each of which has produced real damage:
 
 ## Output
 
-Findings go to `projects/<name>/solution-design-review-<date>.md`, beside the
+Findings go to `<repo>/context/projects/<name>/solution-design-review-<date>.md`, beside the
 design they judge. When the design rides a PR in a project repo instead, they
 land as PR comments anchored to the lines they concern, with the summary
 comment carrying the verdict. Either way: per
