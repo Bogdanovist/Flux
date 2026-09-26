@@ -134,7 +134,10 @@
       "allowWrite": [
         "~/src/personal",
         "~/.npm",
-        "~/.expo"
+        "~/.expo",
+        "~/.gradle",
+        "~/.android",
+        "/opt/homebrew/share/android-commandlinetools"
       ]
     },
     "network": {
@@ -142,7 +145,14 @@
       "allowedDomains": [
         "github.com",
         "*.github.com",
-        "registry.npmjs.org"
+        "registry.npmjs.org",
+        "services.gradle.org",
+        "downloads.gradle.org",
+        "plugins.gradle.org",
+        "repo.maven.apache.org",
+        "repo1.maven.org",
+        "dl.google.com",
+        "maven.google.com"
       ],
       "allowLocalBinding": true
     }
