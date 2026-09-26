@@ -123,6 +123,12 @@
   "sandbox": {
     "enabled": true,
     "allowUnsandboxedCommands": false,
+    "excludedCommands": [
+      "docker *",
+      "supabase *",
+      "open -a Docker",
+      "npm run web:phone"
+    ],
     "enableWeakerNetworkIsolation": true,
     "filesystem": {
       "denyRead": [
