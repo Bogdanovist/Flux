@@ -13,6 +13,7 @@ the phone's bookmark never changes and two prototypes can run at once:
 |---|---|
 | Lines-on-Maps | 5173 |
 | harpastum | 5174 |
+| tend-to-do | 5175 |
 
 A new prototype takes the next free port and adds its row here.
 
