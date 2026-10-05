@@ -1,16 +1,24 @@
 {
   "identity": "matthumanhealth@matthumanhealths-MacBook-Pro",
-  "generated_at": "2026-09-24T22:42:29Z",
-  "generated_at_epoch": 1790289749,
-  "records": 260,
+  "generated_at": "2026-10-05T04:40:58Z",
+  "generated_at_epoch": 1791175258,
+  "records": 311,
   "skills": {
+    "anthropic-skills:docs": {
+      "count": 1,
+      "last_used": "2026-09-25T01:26:08Z"
+    },
     "brainstorming": {
       "count": 4,
       "last_used": "2026-09-04T04:04:51Z"
     },
+    "clear": {
+      "count": 1,
+      "last_used": "2026-09-25T23:08:17Z"
+    },
     "close-project": {
-      "count": 7,
-      "last_used": "2026-09-04T04:04:51Z"
+      "count": 13,
+      "last_used": "2026-10-05T04:33:55Z"
     },
     "codebase-review": {
       "count": 14,
@@ -21,8 +29,8 @@
       "last_used": "2026-09-04T04:04:52Z"
     },
     "curate": {
-      "count": 9,
-      "last_used": "2026-09-12T05:44:56Z"
+      "count": 10,
+      "last_used": "2026-09-25T05:04:07Z"
     },
     "database-migrations": {
       "count": 1,
@@ -37,12 +45,12 @@
       "last_used": "2026-09-04T01:34:20Z"
     },
     "explore-problem": {
-      "count": 6,
-      "last_used": "2026-09-04T04:04:53Z"
+      "count": 8,
+      "last_used": "2026-09-25T05:54:25Z"
     },
     "followup": {
-      "count": 13,
-      "last_used": "2026-09-12T05:34:05Z"
+      "count": 16,
+      "last_used": "2026-09-25T05:24:53Z"
     },
     "gathering-runtime-evidence-infra": {
       "count": 3,
@@ -65,16 +73,16 @@
       "last_used": "2026-09-04T04:04:58Z"
     },
     "handoff": {
-      "count": 3,
-      "last_used": "2026-09-04T04:04:58Z"
+      "count": 4,
+      "last_used": "2026-09-26T04:38:12Z"
     },
     "implementer": {
       "count": 5,
       "last_used": "2026-09-04T04:04:59Z"
     },
     "learn": {
-      "count": 5,
-      "last_used": "2026-09-08T11:37:40Z"
+      "count": 13,
+      "last_used": "2026-09-26T04:46:05Z"
     },
     "linear-whip": {
       "count": 17,
@@ -125,8 +133,12 @@
       "last_used": "2026-09-08T03:40:50Z"
     },
     "open-project": {
-      "count": 5,
-      "last_used": "2026-09-05T03:43:53Z"
+      "count": 14,
+      "last_used": "2026-09-25T23:15:26Z"
+    },
+    "phone-prototype": {
+      "count": 3,
+      "last_used": "2026-09-26T04:24:38Z"
     },
     "plan": {
       "count": 1,
@@ -145,8 +157,8 @@
       "last_used": "2026-08-03T11:23:45Z"
     },
     "records": {
-      "count": 5,
-      "last_used": "2026-09-05T04:57:56Z"
+      "count": 9,
+      "last_used": "2026-09-25T23:10:57Z"
     },
     "resolving-sync-conflicts": {
       "count": 1,
@@ -157,20 +169,20 @@
       "last_used": "2026-08-11T07:47:54Z"
     },
     "reviewing-diff": {
-      "count": 10,
-      "last_used": "2026-09-04T02:16:22Z"
+      "count": 17,
+      "last_used": "2026-10-05T04:28:46Z"
     },
     "shape-tracers": {
       "count": 5,
       "last_used": "2026-09-04T04:03:35Z"
     },
     "solution-design": {
-      "count": 8,
-      "last_used": "2026-09-05T04:13:18Z"
+      "count": 9,
+      "last_used": "2026-09-25T12:08:20Z"
     },
     "spike": {
-      "count": 10,
-      "last_used": "2026-09-04T04:03:36Z"
+      "count": 11,
+      "last_used": "2026-09-26T01:02:07Z"
     },
     "systematic-debugging": {
       "count": 1,
@@ -201,8 +213,8 @@
       "last_used": "2026-09-12T05:48:04Z"
     },
     "writing-pr-descriptions": {
-      "count": 9,
-      "last_used": "2026-09-16T04:26:25Z"
+      "count": 13,
+      "last_used": "2026-10-05T04:28:18Z"
     },
     "writing-skills": {
       "count": 4,
