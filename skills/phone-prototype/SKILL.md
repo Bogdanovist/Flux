@@ -38,3 +38,13 @@ carries a comment saying why:
 - `watch: { usePolling: true, interval: 200 }` — the Claude Code sandbox blocks
   macOS file-system events, so without polling an agent's edits never reach
   the phone.
+
+An Expo prototype serves through Metro, which has no polling watcher, so its
+dev server runs outside the sandbox. Name the repo's script `web:phone`
+(`expo start --web --host lan --port <port>`): Flux `settings.json` lists
+`npm run web:phone` in `sandbox.excludedCommands`. The exclusion applies only
+to a Bash call that is that command alone. Make the worktree the session's
+directory with a bare `cd` call, then start `npm run web:phone` as its own
+background call. A call with a `cd … &&` prefix runs inside the sandbox,
+and edits never reach the phone. If an edit still does not reach the phone,
+tell Matt which call started the server, and capture the result with `/learn`.
