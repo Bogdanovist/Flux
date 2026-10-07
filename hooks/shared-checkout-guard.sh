@@ -76,17 +76,21 @@ if [[ "${FLUX_GUARD_SKIP:-}" == "1" ]] || [[ "$NORM" =~ $INLINE_SKIP_RE ]]; then
   exit 0
 fi
 
-# --- Does this command act on the shared checkout? ---------------------------
+# --- Which shared checkout, if any, does a segment act on? -------------------
 FALLBACK_CWD=$(printf '%s' "$INPUT" | jq -r '.cwd // empty' 2>/dev/null || true)
-CMD_DIR=$(resolve_command_dir "$STRIPPED" "$FALLBACK_CWD")
-[[ -n "$CMD_DIR" && -d "$CMD_DIR" ]] || CMD_DIR="$(pwd)"
-
-TARGET_REAL=$(cd "$CMD_DIR" 2>/dev/null && pwd -P) || exit 0
 FLUX_REAL=$(cd "$FLUX" 2>/dev/null && pwd -P) || exit 0
 SRC_REAL=$(cd "${FLUX_SRC_ROOT:-$FLUX/..}" 2>/dev/null && pwd -P) || exit 0
-if [[ "$TARGET_REAL" != "$FLUX_REAL" ]]; then
-  [[ "$(dirname "$TARGET_REAL")" == "$SRC_REAL" && -d "$TARGET_REAL/.git" ]] || exit 0
-fi
+
+# Echo the physical path of the shared checkout <dir> resolves to, or nothing.
+shared_checkout() {
+  local dir="$1" real
+  [[ -n "$dir" && -d "$dir" ]] || dir="$(pwd)"
+  real=$(cd "$dir" 2>/dev/null && pwd -P) || return 0
+  if [[ "$real" == "$FLUX_REAL" ]] \
+     || [[ "$(dirname "$real")" == "$SRC_REAL" && -d "$real/.git" ]]; then
+    printf '%s\n' "$real"
+  fi
+}
 
 block() {
   mkdir -p "$LOG_DIR" 2>/dev/null || true
@@ -102,20 +106,24 @@ block() {
 SWEEP_KIND=""
 DISCARD_KIND=""
 
-while IFS= read -r seg; do
+TARGET_REAL=""
+
+while IFS=$'\t' read -r seg_dir seg; do
   [[ "$seg" =~ ^git([[:space:]]|$) ]] || continue
+  seg_target=$(shared_checkout "$seg_dir")
+  [[ -n "$seg_target" ]] || continue
+  kinds_before="$SWEEP_KIND$DISCARD_KIND"
 
   # Classification must see past the global options that can sit between
-  # `git` and its subcommand. resolve_command_dir above already honours
-  # `git -C <dir>` when deciding which repo a command acts on, so a segment
-  # like `git -C "$FLUX_DIR" add -A` resolves to the shared checkout — and
+  # `git` and its subcommand. command_segment_dirs has already applied
+  # `git -C <dir>` to this segment's directory, so a segment like
+  # `git -C "$FLUX_DIR" add -A` is judged against the shared checkout — and
   # would then slip through every pattern below, all anchored on the
   # subcommand following `git` directly. `-c <name>=<value>` is stripped on
   # the same grounds.
   while [[ "$seg" =~ ^git[[:space:]]+(-C|-c)[[:space:]]+[^[:space:]]+[[:space:]]+(.*)$ ]]; do
     seg="git ${BASH_REMATCH[2]}"
   done
-
   # `git add` with -A / --all / a bare `.` pathspec.
   if [[ -z "$SWEEP_KIND" && "$seg" =~ ^git[[:space:]]+add[[:space:]]+(.*)$ ]]; then
     ARGS="${BASH_REMATCH[1]}"
@@ -159,7 +167,10 @@ while IFS= read -r seg; do
       DISCARD_KIND="git-reset-hard"
     fi
   fi
-done < <(command_segments "$STRIPPED")
+  if [[ -z "$TARGET_REAL" && "$SWEEP_KIND$DISCARD_KIND" != "$kinds_before" ]]; then
+    TARGET_REAL="$seg_target"
+  fi
+done < <(command_segment_dirs "$STRIPPED" "$FALLBACK_CWD")
 
 if [[ "$SWEEP_KIND" == "git-add-sweep" ]]; then
   block "$SWEEP_KIND" "Blocked: \`git add\` with -A/--all/. in the shared checkout at ${TARGET_REAL}.

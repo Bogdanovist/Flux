@@ -146,6 +146,21 @@ expect_allow "allows a sweep in a project's linked worktree" \
              'git add -A' "$APP_WORKTREE_FIX"
 expect_allow "allows named paths in a project's main checkout" \
              'git add -- context/index.md' "$MAIN_FIX"
+
+# Each git segment is judged in the directory it runs in, so a `cd` after it
+# changes nothing, and a `-C` on one segment does not carry to the next.
+expect_block "blocks a sweep followed by cd elsewhere" \
+             "cd $FLUX_FIX && git add -A && git commit -m x && cd $ELSEWHERE" "$ELSEWHERE"
+expect_block "blocks a sweep in the cwd before a cd" \
+             "git add -A && cd $ELSEWHERE" "$FLUX_FIX"
+expect_block "blocks a sweep after another segment's git -C" \
+             "git -C $ELSEWHERE status && git add -A" "$FLUX_FIX"
+expect_allow "allows a worktree commit -a followed by cd -" \
+             "cd $WORKTREE_FIX && git commit -qam msg && cd -" "$FLUX_FIX"
+expect_allow "allows a worktree commit -a followed by cd <flux>" \
+             "cd $WORKTREE_FIX && git commit -qam msg && cd $FLUX_FIX" "$FLUX_FIX"
+expect_allow "allows a sweep in a subshell cd'd to a worktree" \
+             "(cd $WORKTREE_FIX && git add -A)" "$FLUX_FIX"
 ln -s "$FLUX_FIX" "$TEST_TMP/flux-link"
 expect_block "resolves a symlinked cwd to the checkout" \
              'git add -A' "$TEST_TMP/flux-link"

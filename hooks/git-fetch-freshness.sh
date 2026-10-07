@@ -100,7 +100,10 @@ if [[ -z "${GIT_FRESH_REMOTE:-}" ]]; then
 fi
 
 # --- Resolve the repo the command actually runs against. ---
-CMD_DIR=$(resolve_command_dir "$STRIPPED" "$(printf '%s' "$INPUT" | jq -r '.cwd // empty' 2>/dev/null || true)")
+# The first git segment's directory is the repo whose remote refs it reads. A
+# command with no git segment reads refs from wherever its last segment runs.
+CMD_DIR=$(command_segment_dirs "$STRIPPED" "$(printf '%s' "$INPUT" | jq -r '.cwd // empty' 2>/dev/null || true)" \
+  | awk -F'\t' '{ last = $1 } !found && $2 ~ /^git([[:space:]]|$)/ { found = $1 } END { print (found != "" ? found : last) }')
 [[ -n "$CMD_DIR" && -d "$CMD_DIR" ]] || CMD_DIR="$(pwd)"
 
 # Inside a git repo? If not, nothing to refresh.
