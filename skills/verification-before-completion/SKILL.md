@@ -50,7 +50,8 @@ the figure: the source shape and row count, the bound range against the data's a
 range, and how long the table has existed. Sanity-check the magnitude first. If a cost
 implies the query read nothing, and the table holds multiple gigabytes, treat that as a
 setup error until you prove otherwise. Two runs that share one flawed setup do not
-corroborate each other.
+corroborate each other. A counterfactual run tests a removal only once
+`git diff` or a grep shows the removed line is gone.
 
 **An affirmative or empty result answered a weaker question than you asked.** A search
 that returns nothing proves absence only when the search works and its scope covers where
