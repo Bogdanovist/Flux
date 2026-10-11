@@ -26,8 +26,8 @@
 # never blocks session start and always exits 0.
 #
 # Environment (overridable for testing):
-#   FLUX_DIR         root of the Flux context repo (default: resolved from this file)
-#   FLUX_SKILLS_DIR  provider skill dir to link into (default ~/.claude/skills)
+#   FLUX_DIR           root of the Flux context repo (default: resolved from this file)
+#   CLAUDE_CONFIG_DIR  config dir whose skills/ to link into (default ~/.claude)
 
 set -uo pipefail
 
@@ -46,7 +46,7 @@ fi
 REPO_ROOT="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
 FLUX="${FLUX_DIR:-$REPO_ROOT}"
 SKILLS_SRC="$FLUX/skills"
-TARGET_DIR="${FLUX_SKILLS_DIR:-$HOME/.claude/skills}"
+TARGET_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skills"
 
 emit() {
   jq -n --arg msg "$1" '{

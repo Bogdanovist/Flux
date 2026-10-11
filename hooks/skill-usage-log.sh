@@ -1,7 +1,7 @@
 #!/bin/bash
 # skill-usage-log.sh — records every skill load to the config dir's
-# skill-usage.jsonl (~/.claude/skill-usage.jsonl unless FLUX_CLAUDE_DIR moved
-# the install; scripts/rollup-skill-usage.sh reads the same path).
+# skill-usage.jsonl (~/.claude/skill-usage.jsonl unless CLAUDE_CONFIG_DIR names
+# another config dir; scripts/rollup-skill-usage.sh reads the same path).
 #
 # Three load paths, each recorded under the `source` that distinguishes them:
 #
@@ -25,7 +25,7 @@
 
 set -uo pipefail
 
-LOG="${SKILL_USAGE_LOG:-${FLUX_CLAUDE_DIR:-$HOME/.claude}/skill-usage.jsonl}"
+LOG="${SKILL_USAGE_LOG:-${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skill-usage.jsonl}"
 INPUT=$(cat)
 
 EVENT=$(echo "$INPUT" | jq -r '.hook_event_name // empty' 2>/dev/null) || exit 0

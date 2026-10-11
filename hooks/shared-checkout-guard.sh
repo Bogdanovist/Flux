@@ -41,7 +41,7 @@ set -uo pipefail
 FLUX="${FLUX_DIR:-$(cd -P "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 # Commands name the checkout as `$FLUX_DIR`; the parser expands it from here.
 export FLUX_DIR="$FLUX"
-LOG_DIR="${FLUX_LOG_DIR:-${HOME}/.claude/logs}"
+LOG_DIR="${FLUX_LOG_DIR:-${CLAUDE_CONFIG_DIR:-$HOME/.claude}/logs}"
 LOG_FILE="${LOG_DIR}/shared-checkout-guard.log"
 
 INPUT=$(cat)

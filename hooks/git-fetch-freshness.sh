@@ -33,7 +33,7 @@
 set -euo pipefail
 
 MAX_AGE="${GIT_FRESH_MAX_AGE:-120}"
-LOG_DIR="${FLUX_LOG_DIR:-${HOME}/.claude/logs}"
+LOG_DIR="${FLUX_LOG_DIR:-${CLAUDE_CONFIG_DIR:-$HOME/.claude}/logs}"
 LOG_FILE="${LOG_DIR}/git-fetch-freshness.log"
 
 INPUT=$(cat)

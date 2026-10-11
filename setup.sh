@@ -110,7 +110,7 @@ echo "  Installed the pre-commit hook (secrets scan + shell suites)"
 # relink hook owns that directory's Flux-owned links and reports collisions
 # with anything else. stdin is closed because the hook reads its JSON input
 # from stdin when a session fires it, and an open terminal would block it.
-relink_report=$(FLUX_SKILLS_DIR="$CLAUDE_DIR/skills" \
+relink_report=$(CLAUDE_CONFIG_DIR="$CLAUDE_DIR" \
   bash "$REPO_DIR/hooks/skills-relink.sh" </dev/null 2>/dev/null || true)
 echo "  Linked skills into $CLAUDE_DIR/skills"
 if [ -n "$relink_report" ] && command -v jq >/dev/null 2>&1; then
