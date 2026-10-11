@@ -4,7 +4,8 @@
 #
 # The Flux dir passes when every link in it, and in its skills/, resolves into
 # the Flux checkout, its settings file names FLUX_DIR, and nothing in it names
-# the other repo. The other dir passes when its CLAUDE.md resolves into the
+# the other repo outside permissions.deny. A deny rule on the other repo keeps
+# Flux sessions out of it, so it passes. The other dir passes when its CLAUDE.md resolves into the
 # other repo, no link in it resolves into Flux, and its settings file carries
 # no Flux merge: no flux-merged.json, no FLUX_* env key, no path into Flux.
 #
@@ -48,8 +49,8 @@ check "every Flux skill is linked" \
   "$(or_ok "$(for s in "$FLUX"/skills/*/; do n="$(basename "$s")"; [ "$(readlink "$FLUX_CFG/skills/$n" 2>/dev/null)" = "$FLUX/skills/$n" ] || echo "$n"; done)")"
 check "settings name this FLUX_DIR" \
   "$( [ "$(jq -r '.env.FLUX_DIR // empty' "$FLUX_CFG/settings.json" 2>/dev/null)" = "$FLUX" ] && echo ok || echo "env.FLUX_DIR is '$(jq -r '.env.FLUX_DIR // empty' "$FLUX_CFG/settings.json" 2>/dev/null)'")"
-check "settings never name the other repo" \
-  "$(or_ok "$(grep -n -- "$OTHER_REPO" "$FLUX_CFG/settings.json" 2>/dev/null)")"
+check "settings name the other repo only to deny it" \
+  "$(or_ok "$(jq 'del(.permissions.deny)' "$FLUX_CFG/settings.json" 2>/dev/null | grep -n -- "$OTHER_REPO")")"
 
 printf '%s\n' "Other config dir: $OTHER_CFG"
 other_claude_md="$(readlink "$OTHER_CFG/CLAUDE.md" 2>/dev/null || echo 'no link')"
