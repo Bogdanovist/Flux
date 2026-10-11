@@ -21,12 +21,12 @@
 # Prints the path written. Exits 0 on success, 1 when nothing could be written.
 #
 # Environment (overridable for testing):
-#   SKILL_USAGE_LOG   log to aggregate (default $HOME/.claude/skill-usage.jsonl)
+#   SKILL_USAGE_LOG   log to aggregate (default skill-usage.jsonl in the config dir)
 #   FLUX_DIR        repo root receiving the rollup (default: this script's repo)
 
 set -uo pipefail
 
-LOG="${SKILL_USAGE_LOG:-$HOME/.claude/skill-usage.jsonl}"
+LOG="${SKILL_USAGE_LOG:-${CLAUDE_CONFIG_DIR:-$HOME/.claude}/skill-usage.jsonl}"
 
 # Resolve the repo physically: the script can be reached through the
 # ~/.claude/hooks symlink chain, where a lexical `..` leaves the repo.

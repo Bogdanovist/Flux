@@ -2,8 +2,8 @@
 # Install the Flux config onto a machine.
 #
 # Usage:
-#   ./setup.sh                                  # install into ~/.claude
-#   FLUX_CLAUDE_DIR=~/.claude-flux ./setup.sh   # install into its own config dir
+#   ./setup.sh                                    # install into ~/.claude
+#   CLAUDE_CONFIG_DIR=~/.claude-flux ./setup.sh   # install into its own config dir
 #
 # One config repo owns one config dir. A machine that also carries another
 # config repo — a work one, say — needs Flux somewhere else, because both
@@ -19,7 +19,7 @@
 set -euo pipefail
 
 REPO_DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CLAUDE_DIR="${FLUX_CLAUDE_DIR:-$HOME/.claude}"
+CLAUDE_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 
 echo "Installing Flux from $REPO_DIR into $CLAUDE_DIR"
 
@@ -37,7 +37,7 @@ link_item() {
     case "$(readlink "$target")" in
       "$REPO_DIR"/*) ;;
       *)
-        echo "  SKIP $name — $target points into another config repo. Remove it by hand, or install Flux with FLUX_CLAUDE_DIR set."
+        echo "  SKIP $name — $target points into another config repo. Remove it by hand, or install Flux with CLAUDE_CONFIG_DIR set."
         return 0
         ;;
     esac

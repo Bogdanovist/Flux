@@ -83,6 +83,22 @@ jq 'del(.sandbox)' "$FLUX/settings.local.json" >"$T/x" && mv "$T/x" "$FLUX/setti
 merge >/dev/null
 check "sandbox dropped from sources leaves" 'null' "$(q .sandbox)"
 
+jq '.sandbox = {"enabled":true}' "$FLUX/settings.json" >"$T/x" && mv "$T/x" "$FLUX/settings.json"
+merge >/dev/null
+remove() { FLUX_DIR="$FLUX" bash "$MERGE" --remove "$USER_FILE"; }
+before_remove="$(backups)"
+sleep 1 # backups are named to the second
+check "remove reports removed"          "removed" "$(remove)"
+check "remove takes the Flux hook out"  '["mine.sh"]' "$(q '[.hooks.Stop[].hooks[].command]')"
+check "remove takes Flux env out"       'null' "$(q .env)"
+check "remove keeps user permissions"   '["Read"]' "$(q .permissions.allow)"
+check "remove takes Flux denies out"    'null' "$(q .permissions.deny)"
+check "remove takes the sandbox out"    'null' "$(q .sandbox)"
+check "remove keeps user preferences"   '"sonnet"' "$(q .model)"
+check "remove deletes the record"       "no" "$([ -e "$T/claude/flux-merged.json" ] && echo yes || echo no)"
+check "remove makes one backup"         "$((before_remove+1))" "$(backups)"
+check "second remove is silent"         "" "$(remove)"
+
 rm "$USER_FILE"; ln -s "$FLUX/settings.json" "$USER_FILE"
 merge >/dev/null 2>&1; check "a linked user file is refused" "1" "$?"
 rm "$USER_FILE"
