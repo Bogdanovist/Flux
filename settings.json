@@ -7,11 +7,37 @@
   },
   "permissions": {
     "allow": [
-      "Bash(gh pr:*)",
-      "Bash(gh api:*)",
-      "Bash(git add:*)",
-      "Bash(git commit -m ':*)",
-      "Bash(git push:*)"
+      "Bash(*)",
+      "Read",
+      "Edit",
+      "Write",
+      "Glob",
+      "Grep",
+      "WebSearch",
+      "WebFetch"
+    ],
+    "deny": [
+      "Read(**/.env*)",
+      "Read(**/secrets/**)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.config/gcloud/**)",
+      "Bash(gcloud:*)",
+      "Bash(bq:*)",
+      "Bash(gsutil:*)",
+      "Bash(terraform:*)"
+    ],
+    "ask": [
+      "Bash(rm -rf *)",
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)",
+      "Bash(git checkout -- *)",
+      "Bash(git clean *)",
+      "Bash(git branch -D *)",
+      "Bash(sudo rm *)",
+      "Bash(chmod 777 *)"
     ],
     "defaultMode": "auto"
   },
@@ -120,6 +146,12 @@
   "editorMode": "normal",
   "showTurnDuration": true,
   "autoMemoryEnabled": false,
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true,
+  "skipDangerousModePermissionPrompt": true,
+  "enableArtifact": false,
+  "enableWorkflows": false,
+  "workflowKeywordTriggerEnabled": false,
   "sandbox": {
     "enabled": true,
     "allowUnsandboxedCommands": false,

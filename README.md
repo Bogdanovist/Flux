@@ -14,7 +14,7 @@ that repo's own `context/` directory, beside its code.
 |---|---|
 | `AGENTS.md` / `CLAUDE.md` | The charter. `AGENTS.md` is the provider-agnostic source; `CLAUDE.md` imports it and carries only Claude-specific loading notes. |
 | `settings.json` | Claude Code settings, env vars, and hook wiring, merged into the user's own settings file. |
-| `settings.local.json` | This machine's permissions, env and hooks, merged after `settings.json` — gitignored, never pushed. |
+| `settings.local.json` | Settings true of this machine alone — its paths, its terminal hooks, deny rules for repos only it carries — merged after `settings.json`. Gitignored; every setting that holds on every machine goes in `settings.json`. |
 | `skills/` | Every skill, flat, one directory each. All of them install; nothing gates which are active. |
 | `agents/` | Subagent definitions — researcher, debugger, verifier, curator, test-runner, and the rest. |
 | `model-profiles.toml` | The `best` / `mid` / `cheap` tier contract and its provider mappings. |
