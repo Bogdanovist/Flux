@@ -17,41 +17,34 @@
 #   only where the file has none, because the app writes preferences into
 #   the same file.
 #
-# --remove takes Flux out of a config dir another config repo is taking over:
-# it removes what the last merge added, deletes the record, and adds nothing.
-# Keys set only where the file had none stay, because the file cannot tell
-# them apart from the person's own preferences.
-#
 # The user file is written, after a timestamped backup, only when the run
-# changes it; the script then prints "merged" or "removed". Called by setup.sh
+# changes it; the script then prints "merged". Called by setup.sh
 # and, at every session start, by hooks/flux-sync.sh.
 #
-# Usage: merge-settings.sh [--remove] <user-settings.json>
+# Usage: merge-settings.sh <user-settings.json>
 # Environment: FLUX_DIR  root of the Flux checkout (default: this script's repo)
 #
-# Exit codes: 0 merged, removed or unchanged, 1 the user file is a link or not JSON.
+# Exit codes: 0 merged or unchanged, 1 the user file is a link or not JSON.
 
 set -uo pipefail
 
 FLUX="${FLUX_DIR:-$(cd -P "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
-MODE=merge
-if [ "${1:-}" = --remove ]; then MODE=remove; shift; fi
-USER_SETTINGS="${1:?usage: merge-settings.sh [--remove] <user-settings.json>}"
+USER_SETTINGS="${1:?usage: merge-settings.sh <user-settings.json>}"
 
 # A checkout with no tracked settings has nothing to merge.
 [ -f "$FLUX/settings.json" ] || exit 0
 
-python3 - "$MODE" "$USER_SETTINGS" "$FLUX/settings.json" "$FLUX/settings.local.json" <<'PY'
+python3 - "$USER_SETTINGS" "$FLUX/settings.json" "$FLUX/settings.local.json" <<'PY'
 import json, os, shutil, sys, time
 
-mode, user_path, *frag_paths = sys.argv[1:]
+user_path, *frag_paths = sys.argv[1:]
 frags = [json.load(open(p)) for p in frag_paths if os.path.exists(p)]
 record_path = os.path.join(os.path.dirname(user_path), "flux-merged.json")
 
 user = {}
 if os.path.lexists(user_path):
     if os.path.islink(user_path):
-        sys.exit(f"{user_path} is a link into another config repo; remove it by hand first.")
+        sys.exit(f"{user_path} is a link; remove it by hand first.")
     user = json.load(open(user_path))
 before = json.dumps(user, indent=2) + "\n"
 if os.path.exists(record_path):
@@ -85,25 +78,6 @@ for key, entries in last.get("permissions", {}).items():
         perms[key] = [e for e in perms[key] if e not in entries]
 if last.get("sandbox"):
     user.pop("sandbox", None)
-
-if mode == "remove":
-    if not os.path.exists(user_path):
-        sys.exit(0)
-    user["hooks"] = {k: v for k, v in hooks.items() if v}
-    for key in [k for k, v in perms.items() if v == []]:
-        del perms[key]
-    for key in ("env", "permissions"):
-        if not user[key]:
-            del user[key]
-    if os.path.exists(record_path):
-        os.remove(record_path)
-    after = json.dumps(user, indent=2) + "\n"
-    if after != before:
-        shutil.copy2(user_path, f"{user_path}.bak.{time.strftime('%Y%m%d-%H%M%S')}")
-        with open(user_path, "w") as f:
-            f.write(after)
-        print("removed")
-    sys.exit(0)
 
 def deep_merge(base, extra):
     for key, value in extra.items():

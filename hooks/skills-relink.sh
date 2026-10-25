@@ -19,8 +19,8 @@
 # wrong place, and removes those that point into the repo but no longer
 # resolve. An entry owned by anything else — a real directory, or a link into
 # another tree — is never touched, since silently overwriting it would
-# destroy another config repo's install; it is reported as a collision alongside
-# the next change instead.
+# destroy whatever installed it; it is reported as a collision alongside the
+# next change instead.
 #
 # Silent when the link set is unchanged, which is almost every session. It
 # never blocks session start and always exits 0.
@@ -113,8 +113,8 @@ for src in "$SKILLS_SRC"/*/; do
 done
 
 # Prune links that point into the repo but no longer resolve — the residue of
-# a deleted or renamed skill. Links into anything else belong to another
-# config repo.
+# a deleted or renamed skill. Links into anything else belong to whatever
+# installed them.
 for link in "$TARGET_DIR"/*; do
   [ -L "$link" ] || continue
   target="$(readlink "$link")"

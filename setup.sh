@@ -1,20 +1,10 @@
 #!/usr/bin/env bash
 # Install the Flux config onto a machine.
 #
-# Usage:
-#   ./setup.sh                                    # install into ~/.claude
-#   CLAUDE_CONFIG_DIR=~/.claude-flux ./setup.sh   # install into its own config dir
+# Usage: ./setup.sh
 #
-# One config repo owns one config dir. A machine that also carries another
-# config repo — a work one, say — needs Flux somewhere else, because both
-# would otherwise claim the same CLAUDE.md and the same skill links. Install
-# Flux into its own dir there, and start personal sessions with
-# `CLAUDE_CONFIG_DIR=~/.claude-flux claude`, which relocates the whole config
-# dir the CLI reads.
-#
-# The script backs up whatever it replaces and converges on re-runs. A link
-# that already points into another config repo is reported and left alone,
-# because removing it would break that install.
+# The script backs up whatever it replaces and converges on re-runs. It
+# installs into $CLAUDE_CONFIG_DIR when that is set, and ~/.claude otherwise.
 
 set -euo pipefail
 
@@ -34,13 +24,6 @@ link_item() {
   local source="$REPO_DIR/$name"
 
   if [ -L "$target" ]; then
-    case "$(readlink "$target")" in
-      "$REPO_DIR"/*) ;;
-      *)
-        echo "  SKIP $name — $target points into another config repo. Remove it by hand, or install Flux with CLAUDE_CONFIG_DIR set."
-        return 0
-        ;;
-    esac
     rm "$target"
   elif [ -e "$target" ]; then
     local backup="${target}.bak"
@@ -121,8 +104,4 @@ fi
 echo
 echo "Done. Re-run any time; the install converges."
 echo
-if [ "$CLAUDE_DIR" != "$HOME/.claude" ]; then
-  echo "Start personal sessions with: CLAUDE_CONFIG_DIR=$CLAUDE_DIR claude"
-  echo
-fi
 echo "Next: edit $REPO_DIR/settings.local.json to set this machine's settings. The next session merges them."

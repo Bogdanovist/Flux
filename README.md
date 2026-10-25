@@ -53,32 +53,6 @@ rules. `setup.sh` runs the merge, and the SessionStart sync hook runs it
 again after each pull. Claude Code reloads the user file when it changes, so
 the running session picks up most changes, hooks and permissions included.
 
-**On a machine that already carries another config repo**, give Flux its own
-config dir instead, because two config repos cannot both own `~/.claude`:
-
-```bash
-CLAUDE_CONFIG_DIR=~/.claude-flux "$FLUX_DIR/setup.sh"
-CLAUDE_CONFIG_DIR=~/.claude-flux claude       # start a personal session
-```
-
-`CLAUDE_CONFIG_DIR` relocates the whole config dir the CLI reads, so the two
-installs never see each other. Every Flux hook and script finds the config
-dir through `CLAUDE_CONFIG_DIR`. Setup also refuses to replace a link that
-points into another config repo, and says so rather than breaking that
-install.
-
-To hand a config dir that Flux owns to another config repo, take Flux's merge
-out of its settings file, then remove the links that point into Flux:
-
-```bash
-bash "$FLUX_DIR/scripts/merge-settings.sh" --remove ~/.claude/settings.json
-find ~/.claude ~/.claude/skills -maxdepth 1 -type l -lname "$FLUX_DIR/*" -delete
-```
-
-The merge removes every hook, env key, permission entry and the sandbox that
-Flux's settings files put there, `settings.local.json` included. Re-add by
-hand any machine hook the other repo should keep.
-
 Pull updates with a normal `git pull`; the SessionStart hook fast-forwards the
 checkout on its own, and changes take effect on the next session.
 
