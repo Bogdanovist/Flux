@@ -100,7 +100,6 @@ private fun HomeScreen(state: LockState, now: Instant, onNavigate: (Screen) -> U
             Text("Banned until ${formatInstant(state.until)}", style = MaterialTheme.typography.titleLarge)
             Text(formatRemaining(Duration.between(now, state.until)))
         }
-        is LockState.ClockBehind -> ClockBehindText(state)
     }
     OutlinedButton(onClick = { onNavigate(Screen.Goals) }) { Text("Goals") }
     OutlinedButton(onClick = { onNavigate(Screen.Games) }) { Text("Games") }
@@ -204,11 +203,6 @@ private fun CheckInScreen(
     var preview by remember { mutableStateOf<CheckIn?>(null) }
 
     Text("Check-in", style = MaterialTheme.typography.headlineMedium)
-    if (state is LockState.ClockBehind) {
-        ClockBehindText(state)
-        OutlinedButton(onClick = { onNavigate(Screen.Home) }) { Text("Back") }
-        return
-    }
     if (state !is LockState.CheckInDue) {
         Text("Today's check-in is done. The next one opens at 04:00.")
         OutlinedButton(onClick = { onNavigate(Screen.Home) }) { Text("Back") }
@@ -256,17 +250,7 @@ private fun BlockedScreen(state: LockState, now: Instant, onNavigate: (Screen) -
         Text("Ban ends ${formatInstant(state.until)}.", style = MaterialTheme.typography.titleLarge)
         Text(formatRemaining(Duration.between(now, state.until)))
     }
-    if (state is LockState.ClockBehind) ClockBehindText(state)
     Button(onClick = { onNavigate(Screen.Home) }) { Text("OK") }
-}
-
-@Composable
-private fun ClockBehindText(state: LockState.ClockBehind) {
-    Text("Clock set back", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.error)
-    Text(
-        "The phone's clock reads earlier than your last check-in (${formatInstant(state.lastCheckIn)}). " +
-            "Games stay blocked until the clock is right. Turn on automatic date and time.",
-    )
 }
 
 @Composable

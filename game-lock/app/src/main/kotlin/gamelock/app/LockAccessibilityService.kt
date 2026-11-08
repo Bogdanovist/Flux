@@ -18,9 +18,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 /**
- * Blocks a game when it comes to the foreground while a check-in is due, a ban runs, or the
- * clock was set back. Also puts the PIN gate in front of the pages that turn the blocker off.
- * The game test reads the app's declared category on each event, so a game installed later
+ * Blocks a game when it comes to the foreground while a check-in is due or a ban runs.
+ * Also puts the PIN gate in front of the pages that turn the blocker off. The game test reads the app's declared category on each event, so a game installed later
  * is covered with no rescan.
  */
 class LockAccessibilityService : AccessibilityService() {
@@ -44,7 +43,7 @@ class LockAccessibilityService : AccessibilityService() {
             if (!isBlockable(declaresGame, app.repository.overrideFor(pkg))) return@launch
             when (app.repository.lockStateNow()) {
                 is LockState.CheckInDue -> open(Screen.CheckIn)
-                is LockState.Banned, is LockState.ClockBehind -> {
+                is LockState.Banned -> {
                     performGlobalAction(GLOBAL_ACTION_HOME)
                     open(Screen.Blocked)
                 }
