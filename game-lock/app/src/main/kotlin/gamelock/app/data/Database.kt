@@ -15,6 +15,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.Transaction
 import androidx.room.Update
+import androidx.room.Upsert
+import gamelock.core.AppOverride
 import kotlinx.coroutines.flow.Flow
 
 @Entity(tableName = "goals")
@@ -54,6 +56,13 @@ data class MissedGoalEntity(
     @ColumnInfo(name = "penalty_days") val penaltyDays: Int,
 )
 
+/** One row per app added to or removed from the game list by hand; an app is in one list at most. */
+@Entity(tableName = "game_overrides")
+data class GameOverrideEntity(
+    @PrimaryKey @ColumnInfo(name = "package_name") val packageName: String,
+    val mode: AppOverride,
+)
+
 data class CheckInWithMissed(
     @Embedded val checkIn: CheckInEntity,
     @Relation(parentColumn = "day", entityColumn = "check_in_day")
@@ -90,10 +99,22 @@ interface GameLockDao {
 
     @Insert
     suspend fun insertMissed(missed: List<MissedGoalEntity>)
+
+    @Query("SELECT * FROM game_overrides ORDER BY package_name")
+    fun overrides(): Flow<List<GameOverrideEntity>>
+
+    @Query("SELECT mode FROM game_overrides WHERE package_name = :packageName")
+    suspend fun overrideFor(packageName: String): AppOverride?
+
+    @Upsert
+    suspend fun upsertOverride(override: GameOverrideEntity)
+
+    @Query("DELETE FROM game_overrides WHERE package_name = :packageName")
+    suspend fun deleteOverride(packageName: String)
 }
 
 @Database(
-    entities = [GoalEntity::class, CheckInEntity::class, MissedGoalEntity::class],
+    entities = [GoalEntity::class, CheckInEntity::class, MissedGoalEntity::class, GameOverrideEntity::class],
     version = 1,
     exportSchema = true,
 )

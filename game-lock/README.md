@@ -12,7 +12,8 @@ The design doc is the Claude Doc "Game Lock: Design Doc"
 - `core/` — the check-in and ban rules as plain Kotlin, in a Gradle build of its own, so
   its tests run without a device or the Android SDK.
 - `app/` — the Android app. It stores what the `core` functions return (Room), blocks games
-  through an Accessibility Service, and posts a 07:00 reminder while the check-in is due.
+  through an Accessibility Service, puts a PIN in front of the pages that turn that service
+  off, and posts a 07:00 reminder while the check-in is due.
 
 ## Test the rules
 
@@ -29,5 +30,5 @@ Needs the Android SDK (`ANDROID_HOME`, or `sdk.dir` in `local.properties`).
 adb install app/build/outputs/apk/debug/app-debug.apk
 ```
 
-After the first install, allow notifications when the app asks, then turn on Game Lock
-under Settings → Accessibility → Installed apps.
+After the first install, write down the PIN the app shows once, allow notifications, then
+turn on Game Lock under Settings → Accessibility → Installed apps.

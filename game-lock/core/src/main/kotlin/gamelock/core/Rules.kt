@@ -21,7 +21,12 @@ fun checkInDay(now: Instant, zone: ZoneId): LocalDate {
 /** The ban end in force after the latest check-in, or null before the first check-in. */
 fun banEnd(history: List<CheckIn>): Instant? = history.maxByOrNull { it.submittedAt }?.banEnd
 
+/** The time of the latest check-in, or null before the first check-in. */
+fun lastCheckInAt(history: List<CheckIn>): Instant? = history.maxOfOrNull { it.submittedAt }
+
 fun lockState(history: List<CheckIn>, now: Instant, zone: ZoneId): LockState {
+    val last = lastCheckInAt(history)
+    if (last != null && now < last) return LockState.ClockBehind(last)
     val today = checkInDay(now, zone)
     if (history.none { it.day == today }) return LockState.CheckInDue(today)
     val end = banEnd(history)
@@ -43,6 +48,8 @@ fun submitCheckIn(
     now: Instant,
     zone: ZoneId,
 ): CheckIn {
+    val last = lastCheckInAt(history)
+    require(last == null || now >= last) { "The clock reads $now, earlier than the last check-in at $last" }
     val day = checkInDay(now, zone)
     require(history.none { it.day == day }) { "The check-in for $day is already submitted" }
     val goalsById = goals.associateBy { it.id }

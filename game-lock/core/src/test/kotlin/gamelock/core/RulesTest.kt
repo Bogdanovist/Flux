@@ -133,6 +133,21 @@ class RulesTest {
     }
 
     @Test
+    fun `a clock set before the last check-in blocks games`() {
+        val record = checkIn(emptyList(), emptySet(), "2026-11-08T07:00")
+        assertEquals(
+            LockState.ClockBehind(record.submittedAt),
+            lockState(listOf(record), at("2026-11-08T06:59"), sydney),
+        )
+    }
+
+    @Test
+    fun `a check-in is refused while the clock reads before the last one`() {
+        val record = checkIn(emptyList(), emptySet(), "2026-11-08T07:00")
+        assertFailsWith<IllegalArgumentException> { checkIn(listOf(record), emptySet(), "2026-11-05T07:00") }
+    }
+
+    @Test
     fun `goal penalty must be at least one day`() {
         assertFailsWith<IllegalArgumentException> { Goal(id = 3, name = "x", penaltyDays = 0) }
     }

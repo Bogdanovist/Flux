@@ -7,6 +7,7 @@ import gamelock.app.reminder.Reminder
 
 class GameLockApp : Application() {
     val repository: GameLockRepository by lazy { GameLockRepository(GameLockDatabase.open(this)) }
+    val pinGate: PinGate by lazy { PinGate(this) }
 
     override fun onCreate() {
         super.onCreate()

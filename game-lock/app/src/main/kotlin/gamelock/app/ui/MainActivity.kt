@@ -15,7 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import gamelock.app.GameLockApp
 
-enum class Screen { Home, Goals, CheckIn, Blocked }
+enum class Screen { Home, Goals, Games, CheckIn, Blocked }
 
 class MainActivity : ComponentActivity() {
     private var screen by mutableStateOf(Screen.Home)
@@ -29,10 +29,10 @@ class MainActivity : ComponentActivity() {
         if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             askNotifications.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
-        val repository = (application as GameLockApp).repository
+        val app = application as GameLockApp
         setContent {
             MaterialTheme(colorScheme = darkColorScheme()) {
-                GameLockUi(repository, screen, onNavigate = { screen = it })
+                GameLockUi(app.repository, app.pinGate, screen, onNavigate = { screen = it })
             }
         }
     }

@@ -43,4 +43,10 @@ sealed interface LockState {
 
     /** The ban runs until [until]; games are blocked. */
     data class Banned(val until: Instant) : LockState
+
+    /**
+     * The phone's clock reads earlier than the last check-in [lastCheckIn], which only happens
+     * when the clock was set back. Games are blocked until the clock is right again.
+     */
+    data class ClockBehind(val lastCheckIn: Instant) : LockState
 }

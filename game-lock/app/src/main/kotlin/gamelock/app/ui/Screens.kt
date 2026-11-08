@@ -39,6 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import gamelock.app.LockAccessibilityService
+import gamelock.app.PinGate
 import gamelock.app.data.GameLockRepository
 import gamelock.core.CheckIn
 import gamelock.core.Goal
@@ -53,7 +54,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun GameLockUi(repository: GameLockRepository, screen: Screen, onNavigate: (Screen) -> Unit) {
+fun GameLockUi(repository: GameLockRepository, pinGate: PinGate, screen: Screen, onNavigate: (Screen) -> Unit) {
+    var pinSet by remember { mutableStateOf(pinGate.isSet) }
     val goals by repository.goals.collectAsState(initial = null)
     val history by repository.history.collectAsState(initial = null)
     val now = rememberNow()
@@ -66,6 +68,10 @@ fun GameLockUi(repository: GameLockRepository, screen: Screen, onNavigate: (Scre
             Modifier.safeDrawingPadding().padding(16.dp).verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            if (!pinSet) {
+                PinSetupScreen(onSaved = { pin -> pinGate.set(pin); pinSet = true })
+                return@Column
+            }
             val loadedGoals = goals
             val loadedHistory = history
             if (loadedGoals == null || loadedHistory == null) return@Column
@@ -73,6 +79,7 @@ fun GameLockUi(repository: GameLockRepository, screen: Screen, onNavigate: (Scre
             when (screen) {
                 Screen.Home -> HomeScreen(state, now, onNavigate)
                 Screen.Goals -> GoalsScreen(repository, loadedGoals, lockedGoalIds(loadedHistory, now), onNavigate)
+                Screen.Games -> GamesScreen(repository, onNavigate)
                 Screen.CheckIn -> CheckInScreen(repository, loadedGoals, state, onNavigate)
                 Screen.Blocked -> BlockedScreen(state, now, onNavigate)
             }
@@ -93,8 +100,10 @@ private fun HomeScreen(state: LockState, now: Instant, onNavigate: (Screen) -> U
             Text("Banned until ${formatInstant(state.until)}", style = MaterialTheme.typography.titleLarge)
             Text(formatRemaining(Duration.between(now, state.until)))
         }
+        is LockState.ClockBehind -> ClockBehindText(state)
     }
     OutlinedButton(onClick = { onNavigate(Screen.Goals) }) { Text("Goals") }
+    OutlinedButton(onClick = { onNavigate(Screen.Games) }) { Text("Games") }
     AccessibilityStatus()
 }
 
@@ -195,6 +204,11 @@ private fun CheckInScreen(
     var preview by remember { mutableStateOf<CheckIn?>(null) }
 
     Text("Check-in", style = MaterialTheme.typography.headlineMedium)
+    if (state is LockState.ClockBehind) {
+        ClockBehindText(state)
+        OutlinedButton(onClick = { onNavigate(Screen.Home) }) { Text("Back") }
+        return
+    }
     if (state !is LockState.CheckInDue) {
         Text("Today's check-in is done. The next one opens at 04:00.")
         OutlinedButton(onClick = { onNavigate(Screen.Home) }) { Text("Back") }
@@ -242,7 +256,17 @@ private fun BlockedScreen(state: LockState, now: Instant, onNavigate: (Screen) -
         Text("Ban ends ${formatInstant(state.until)}.", style = MaterialTheme.typography.titleLarge)
         Text(formatRemaining(Duration.between(now, state.until)))
     }
+    if (state is LockState.ClockBehind) ClockBehindText(state)
     Button(onClick = { onNavigate(Screen.Home) }) { Text("OK") }
+}
+
+@Composable
+private fun ClockBehindText(state: LockState.ClockBehind) {
+    Text("Clock set back", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.error)
+    Text(
+        "The phone's clock reads earlier than your last check-in (${formatInstant(state.lastCheckIn)}). " +
+            "Games stay blocked until the clock is right. Turn on automatic date and time.",
+    )
 }
 
 @Composable

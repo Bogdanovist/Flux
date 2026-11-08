@@ -25,6 +25,14 @@
             </intent-filter>
         </activity>
 
+        <!-- Its own task, so finishing it returns to the settings page it covered. -->
+        <activity
+            android:name=".ui.PinGateActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:taskAffinity="" />
+
         <service
             android:name=".LockAccessibilityService"
             android:exported="false"

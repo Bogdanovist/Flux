@@ -1,6 +1,7 @@
 package gamelock.app.data
 
 import androidx.room.withTransaction
+import gamelock.core.AppOverride
 import gamelock.core.CheckIn
 import gamelock.core.Goal
 import gamelock.core.LockState
@@ -20,6 +21,17 @@ class GameLockRepository(private val db: GameLockDatabase) {
     val goals: Flow<List<Goal>> = dao.goals().map { rows -> rows.map { it.toGoal() } }
 
     val history: Flow<List<CheckIn>> = dao.history().map { rows -> rows.map { it.toCheckIn() } }
+
+    /** Manual include and exclude decisions, keyed by package name. */
+    val overrides: Flow<Map<String, AppOverride>> =
+        dao.overrides().map { rows -> rows.associate { it.packageName to it.mode } }
+
+    suspend fun overrideFor(packageName: String): AppOverride? = dao.overrideFor(packageName)
+
+    /** Sets the manual decision for [packageName]; null returns the app to its declared category. */
+    suspend fun setOverride(packageName: String, override: AppOverride?) {
+        if (override == null) dao.deleteOverride(packageName) else dao.upsertOverride(GameOverrideEntity(packageName, override))
+    }
 
     suspend fun lockStateNow(now: Instant = Instant.now(), zone: ZoneId = ZoneId.systemDefault()): LockState =
         lockState(historyNow(), now, zone)
