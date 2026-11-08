@@ -16,8 +16,9 @@ data class Goal(
 }
 
 /**
- * One submitted check-in. [day] is the check-in day (see [checkInDay]); it judges the
- * calendar day before it.
+ * One submitted check-in; at most one exists per check-in day [day] (see [checkInDay]). It
+ * records which goals the user judged missed since their last check-in. Days with no
+ * check-in are never judged later.
  *
  * [penalties] maps each missed goal's id to the penalty days it carried at submission, so a
  * later edit to the goal cannot change history. [banEnd] is the ban end this check-in left in

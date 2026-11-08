@@ -4,6 +4,9 @@ plugins {
     kotlin("jvm") version "2.1.0"
 }
 
+// The app build substitutes this build for the dependency gamelock:core.
+group = "gamelock"
+
 repositories {
     mavenCentral()
 }
